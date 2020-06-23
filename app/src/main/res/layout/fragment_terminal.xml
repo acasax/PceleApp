@@ -47,15 +47,39 @@
         android:textAlignment="center"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
-    <EditText
-        android:id="@+id/send_text"
-        android:layout_width="match_parent"
+    <ImageButton
+        android:id="@+id/plusTimeBtn"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/receive_text"
+        android:layout_alignParentEnd="true"
         android:layout_marginTop="48dp"
+        android:layout_marginEnd="101dp"
+        app:srcCompat="@android:drawable/ic_media_ff" />
 
-        android:inputType="text|textNoSuggestions"
-        android:singleLine="true" />
+    <ImageButton
+        android:id="@+id/minusTimeBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/receive_text"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="97dp"
+        android:layout_marginTop="48dp"
+        app:srcCompat="@android:drawable/ic_media_rew" />
+
+    <TextView
+        android:id="@+id/timeTxt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/receive_text"
+        android:layout_marginStart="1dp"
+        android:layout_marginTop="63dp"
+        android:layout_marginEnd="1dp"
+        android:textAlignment="center"
+        android:gravity="center_horizontal"
+        android:layout_toStartOf="@+id/plusTimeBtn"
+        android:layout_toEndOf="@+id/minusTimeBtn"
+        android:text="0" />
 
 
 </RelativeLayout>

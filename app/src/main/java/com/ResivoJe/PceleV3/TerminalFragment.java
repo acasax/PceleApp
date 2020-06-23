@@ -125,11 +125,18 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
         receiveText.setTextColor(getResources().getColor(R.color.colorRecieveText)); // set as default color to reduce number of spans
         receiveText.setMovementMethod(ScrollingMovementMethod.getInstance());
 
-        View sendBtn = view.findViewById(R.id.send_btn);
-        View stopBtn = view.findViewById(R.id.stop_btn);
+        View sendBtn      = view.findViewById(R.id.send_btn);
+        View stopBtn      = view.findViewById(R.id.stop_btn);
+        View plusTimeBtn  = view.findViewById(R.id.plusTimeBtn);
+        View minusTimeBtn = view.findViewById(R.id.minusTimeBtn);
+        TextView time     = view.findViewById(R.id.timeTxt);
+
+        plusTimeBtn.setOnClickListener(v -> setTime(time, "+"));
+        minusTimeBtn.setOnClickListener(v -> setTime(time, "-"));
 
         stopBtn.setOnClickListener(v -> send(stop));
         sendBtn.setOnClickListener(v -> send(start));
+
         return view;
     }
 
@@ -236,6 +243,25 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
     public void onSerialIoError(Exception e) {
         status("Konekcija prekinuta: " + e.getMessage());
         disconnect();
+    }
+
+    public void setTime(TextView a, String s){
+        String currentTime = (String) a.getText();
+        int time = Integer.parseInt(currentTime);
+        if (s == "+"){
+            if (time < 120){
+                time = time + 10;
+                currentTime = String.valueOf(time);
+                a.setText(currentTime);
+            }
+        }else if (s == "-"){
+            if (time > 0){
+                time = time - 10;
+                currentTime = String.valueOf(time);
+                a.setText(currentTime);
+            }
+        }
+
     }
 
 }
