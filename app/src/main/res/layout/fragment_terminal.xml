@@ -10,12 +10,12 @@
         android:id="@+id/send_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_above="@+id/stop_btn"
         android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
         android:layout_marginStart="20dp"
         android:layout_marginEnd="20dp"
-        android:layout_marginBottom="120dp"
+        android:layout_marginBottom="10dp"
         android:background="@color/colorPrimary"
         android:text="@string/po_ni"
         android:textColor="@color/black" />
@@ -29,7 +29,7 @@
         android:layout_alignParentBottom="true"
         android:layout_marginStart="20dp"
         android:layout_marginEnd="20dp"
-        android:layout_marginBottom="40dp"
+        android:layout_marginBottom="20dp"
         android:background="@color/colorPrimary"
         android:text="@string/prekini"
         android:textColor="@color/black"
@@ -40,7 +40,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="0dp"
         android:freezesText="true"
         android:gravity="center_horizontal"
         android:scrollbars="vertical"
@@ -53,7 +53,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/receive_text"
         android:layout_marginStart="1dp"
-        android:layout_marginTop="55dp"
+        android:layout_marginTop="35dp"
         android:layout_marginEnd="1dp"
         android:layout_toStartOf="@+id/plusTimeBtn"
         android:layout_toEndOf="@+id/minusTimeBtn"
@@ -68,8 +68,8 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/receive_text"
         android:layout_alignParentEnd="true"
-        android:layout_marginTop="55dp"
-        android:layout_marginEnd="101dp"
+        android:layout_marginTop="35dp"
+        android:layout_marginEnd="80dp"
         app:srcCompat="@android:drawable/ic_media_ff" />
 
     <ImageButton
@@ -78,8 +78,8 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/receive_text"
         android:layout_alignParentStart="true"
-        android:layout_marginStart="97dp"
-        android:layout_marginTop="55dp"
+        android:layout_marginStart="80dp"
+        android:layout_marginTop="35dp"
         app:srcCompat="@android:drawable/ic_media_rew" />
 
     <TextView
@@ -88,12 +88,12 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/receive_text"
         android:layout_marginStart="1dp"
-        android:layout_marginTop="150dp"
+        android:layout_marginTop="130dp"
         android:layout_marginEnd="1dp"
         android:layout_toStartOf="@+id/plusTimeBtn"
         android:layout_toEndOf="@+id/minusTimeBtn"
         android:gravity="center_horizontal"
-        android:text="@string/_0"
+        android:text="@string/_10"
         android:textAlignment="center"
         android:textSize="38dp" />
 
@@ -103,8 +103,8 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/receive_text"
         android:layout_alignParentEnd="true"
-        android:layout_marginTop="150dp"
-        android:layout_marginEnd="101dp"
+        android:layout_marginTop="130dp"
+        android:layout_marginEnd="80dp"
         app:srcCompat="@android:drawable/ic_media_ff" />
 
     <ImageButton
@@ -113,8 +113,8 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/receive_text"
         android:layout_alignParentStart="true"
-        android:layout_marginStart="97dp"
-        android:layout_marginTop="150dp"
+        android:layout_marginStart="80dp"
+        android:layout_marginTop="130dp"
         app:srcCompat="@android:drawable/ic_media_rew" />
 
     <TextView
@@ -123,7 +123,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/receive_text"
         android:layout_marginStart="1dp"
-        android:layout_marginTop="245dp"
+        android:layout_marginTop="225dp"
         android:layout_marginEnd="1dp"
         android:layout_toStartOf="@+id/plusTimeBtn"
         android:layout_toEndOf="@+id/minusTimeBtn"
@@ -138,8 +138,8 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/receive_text"
         android:layout_alignParentEnd="true"
-        android:layout_marginTop="245dp"
-        android:layout_marginEnd="101dp"
+        android:layout_marginTop="225dp"
+        android:layout_marginEnd="80dp"
         app:srcCompat="@android:drawable/ic_media_ff" />
 
     <ImageButton
@@ -148,8 +148,8 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/receive_text"
         android:layout_alignParentStart="true"
-        android:layout_marginStart="97dp"
-        android:layout_marginTop="245dp"
+        android:layout_marginStart="80dp"
+        android:layout_marginTop="225dp"
         app:srcCompat="@android:drawable/ic_media_rew" />
 
     <TextView
@@ -158,7 +158,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/receive_text"
         android:layout_marginStart="1dp"
-        android:layout_marginTop="340dp"
+        android:layout_marginTop="325dp"
         android:layout_marginEnd="1dp"
         android:layout_toStartOf="@+id/plusTimeBtn"
         android:layout_toEndOf="@+id/minusTimeBtn"
@@ -173,8 +173,8 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/receive_text"
         android:layout_alignParentEnd="true"
-        android:layout_marginTop="340dp"
-        android:layout_marginEnd="101dp"
+        android:layout_marginTop="325dp"
+        android:layout_marginEnd="80dp"
         app:srcCompat="@android:drawable/ic_media_ff" />
 
     <ImageButton
@@ -183,8 +183,8 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/receive_text"
         android:layout_alignParentStart="true"
-        android:layout_marginStart="97dp"
-        android:layout_marginTop="340dp"
+        android:layout_marginStart="80dp"
+        android:layout_marginTop="325dp"
         app:srcCompat="@android:drawable/ic_media_rew" />
 
     <TextView
@@ -193,7 +193,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/receive_text"
         android:layout_marginStart="1dp"
-        android:layout_marginTop="445dp"
+        android:layout_marginTop="425dp"
         android:layout_marginEnd="1dp"
         android:layout_toStartOf="@+id/plusTimeBtn"
         android:layout_toEndOf="@+id/minusTimeBtn"
@@ -208,8 +208,8 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/receive_text"
         android:layout_alignParentEnd="true"
-        android:layout_marginTop="445dp"
-        android:layout_marginEnd="101dp"
+        android:layout_marginTop="425dp"
+        android:layout_marginEnd="80dp"
         app:srcCompat="@android:drawable/ic_media_ff" />
 
     <ImageButton
@@ -218,20 +218,17 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/receive_text"
         android:layout_alignParentStart="true"
-        android:layout_marginStart="97dp"
-        android:layout_marginTop="445dp"
+        android:layout_marginStart="80dp"
+        android:layout_marginTop="425dp"
         app:srcCompat="@android:drawable/ic_media_rew" />
 
     <TextView
         android:id="@+id/timeTitleTxt"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/receive_text"
-        android:layout_marginStart="1dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="1dp"
-        android:layout_toStartOf="@+id/plusTimeBtn"
-        android:layout_toEndOf="@+id/minusTimeBtn"
+        android:layout_marginStart="0dp"
+        android:layout_marginTop="0dp"
         android:gravity="center_horizontal"
         android:text="@string/vreme"
         android:textAlignment="center"
@@ -239,14 +236,11 @@
 
     <TextView
         android:id="@+id/FrekTitleTxt"
-        android:layout_width="121dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/receive_text"
-        android:layout_marginStart="-6dp"
-        android:layout_marginTop="114dp"
+        android:layout_marginTop="95dp"
         android:layout_marginEnd="-13dp"
-        android:layout_toStartOf="@+id/plusTimeBtn"
-        android:layout_toEndOf="@+id/minusTimeBtn"
         android:gravity="center_horizontal"
         android:text="@string/frekvencija"
         android:textAlignment="center"
@@ -254,14 +248,10 @@
 
     <TextView
         android:id="@+id/volatageTitleTxt"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/receive_text"
-        android:layout_marginStart="1dp"
-        android:layout_marginTop="409dp"
-        android:layout_marginEnd="1dp"
-        android:layout_toStartOf="@+id/plusTimeBtn"
-        android:layout_toEndOf="@+id/minusTimeBtn"
+        android:layout_marginTop="390dp"
         android:gravity="center_horizontal"
         android:text="@string/napon"
         android:textAlignment="center"
@@ -269,14 +259,10 @@
 
     <TextView
         android:id="@+id/pauseTitleTxt"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/receive_text"
-        android:layout_marginStart="2dp"
-        android:layout_marginTop="309dp"
-        android:layout_marginEnd="0dp"
-        android:layout_toStartOf="@+id/plusTimeBtn"
-        android:layout_toEndOf="@+id/minusTimeBtn"
+        android:layout_marginTop="290dp"
         android:gravity="center_horizontal"
         android:text="@string/pauza"
         android:textAlignment="center"
@@ -284,14 +270,10 @@
 
     <TextView
         android:id="@+id/impulsTitleTxt"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/receive_text"
-        android:layout_marginStart="-1dp"
-        android:layout_marginTop="213dp"
-        android:layout_marginEnd="3dp"
-        android:layout_toStartOf="@+id/plusTimeBtn"
-        android:layout_toEndOf="@+id/minusTimeBtn"
+        android:layout_marginTop="195dp"
         android:gravity="center_horizontal"
         android:text="@string/impuls"
         android:textAlignment="center"

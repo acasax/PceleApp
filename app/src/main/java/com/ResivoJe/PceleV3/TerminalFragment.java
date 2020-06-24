@@ -129,10 +129,14 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
         View stopBtn      = view.findViewById(R.id.stop_btn);
         View plusTimeBtn  = view.findViewById(R.id.plusTimeBtn);
         View minusTimeBtn = view.findViewById(R.id.minusTimeBtn);
+        View plusFrekBtn  = view.findViewById(R.id.plusFrekBtn);
+        View minusFrekBtn = view.findViewById(R.id.minusFrekBtn);
         TextView time     = view.findViewById(R.id.timeTxt);
+        TextView frek     = view.findViewById(R.id.frekTxt);
 
-        plusTimeBtn.setOnClickListener(v -> setTime(time, "+"));
-        minusTimeBtn.setOnClickListener(v -> setTime(time, "-"));
+        plusTimeBtn.setOnClickListener(v -> Steps(time, "+", 10, 0, 120));
+        minusTimeBtn.setOnClickListener(v -> Steps(time, "-", 10, 0, 120));
+        plusFrekBtn.setOnClickListener(v -> Steps(frek, "+", 10, 10, 120));
 
         stopBtn.setOnClickListener(v -> send(stop));
         sendBtn.setOnClickListener(v -> send(start));
@@ -245,18 +249,18 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
         disconnect();
     }
 
-    public void setTime(TextView a, String s){
+    public void Steps(TextView a, String s, int Step, int minValue, int maxValue){
         String currentTime = (String) a.getText();
         int time = Integer.parseInt(currentTime);
         if (s == "+"){
-            if (time < 120){
-                time = time + 10;
+            if (time < maxValue){
+                time = time + Step;
                 currentTime = String.valueOf(time);
                 a.setText(currentTime);
             }
         }else if (s == "-"){
-            if (time > 0){
-                time = time - 10;
+            if (time > minValue){
+                time = time - Step;
                 currentTime = String.valueOf(time);
                 a.setText(currentTime);
             }
