@@ -15,7 +15,7 @@
         android:layout_alignParentBottom="true"
         android:layout_marginStart="20dp"
         android:layout_marginEnd="20dp"
-        android:layout_marginBottom="40dp"
+        android:layout_marginBottom="120dp"
         android:background="@color/colorPrimary"
         android:text="@string/po_ni"
         android:textColor="@color/black" />
@@ -29,7 +29,7 @@
         android:layout_alignParentBottom="true"
         android:layout_marginStart="20dp"
         android:layout_marginEnd="20dp"
-        android:layout_marginBottom="120dp"
+        android:layout_marginBottom="40dp"
         android:background="@color/colorPrimary"
         android:text="@string/prekini"
         android:textColor="@color/black"
@@ -47,13 +47,28 @@
         android:textAlignment="center"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
+    <TextView
+        android:id="@+id/timeTxt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/receive_text"
+        android:layout_marginStart="1dp"
+        android:layout_marginTop="55dp"
+        android:layout_marginEnd="1dp"
+        android:layout_toStartOf="@+id/plusTimeBtn"
+        android:layout_toEndOf="@+id/minusTimeBtn"
+        android:gravity="center_horizontal"
+        android:text="@string/_0"
+        android:textAlignment="center"
+        android:textSize="38dp" />
+
     <ImageButton
         android:id="@+id/plusTimeBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/receive_text"
         android:layout_alignParentEnd="true"
-        android:layout_marginTop="48dp"
+        android:layout_marginTop="55dp"
         android:layout_marginEnd="101dp"
         app:srcCompat="@android:drawable/ic_media_ff" />
 
@@ -64,22 +79,223 @@
         android:layout_below="@+id/receive_text"
         android:layout_alignParentStart="true"
         android:layout_marginStart="97dp"
-        android:layout_marginTop="48dp"
+        android:layout_marginTop="55dp"
         app:srcCompat="@android:drawable/ic_media_rew" />
 
     <TextView
-        android:id="@+id/timeTxt"
+        android:id="@+id/frekTxt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/receive_text"
         android:layout_marginStart="1dp"
-        android:layout_marginTop="63dp"
+        android:layout_marginTop="150dp"
         android:layout_marginEnd="1dp"
-        android:textAlignment="center"
-        android:gravity="center_horizontal"
         android:layout_toStartOf="@+id/plusTimeBtn"
         android:layout_toEndOf="@+id/minusTimeBtn"
-        android:text="0" />
+        android:gravity="center_horizontal"
+        android:text="@string/_0"
+        android:textAlignment="center"
+        android:textSize="38dp" />
+
+    <ImageButton
+        android:id="@+id/plusFrekBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/receive_text"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="150dp"
+        android:layout_marginEnd="101dp"
+        app:srcCompat="@android:drawable/ic_media_ff" />
+
+    <ImageButton
+        android:id="@+id/minusFrekBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/receive_text"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="97dp"
+        android:layout_marginTop="150dp"
+        app:srcCompat="@android:drawable/ic_media_rew" />
+
+    <TextView
+        android:id="@+id/impulsTxt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/receive_text"
+        android:layout_marginStart="1dp"
+        android:layout_marginTop="245dp"
+        android:layout_marginEnd="1dp"
+        android:layout_toStartOf="@+id/plusTimeBtn"
+        android:layout_toEndOf="@+id/minusTimeBtn"
+        android:gravity="center_horizontal"
+        android:text="@string/_0"
+        android:textAlignment="center"
+        android:textSize="38dp" />
+
+    <ImageButton
+        android:id="@+id/plusImpulsBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/receive_text"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="245dp"
+        android:layout_marginEnd="101dp"
+        app:srcCompat="@android:drawable/ic_media_ff" />
+
+    <ImageButton
+        android:id="@+id/minusImpulsBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/receive_text"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="97dp"
+        android:layout_marginTop="245dp"
+        app:srcCompat="@android:drawable/ic_media_rew" />
+
+    <TextView
+        android:id="@+id/pauseTxt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/receive_text"
+        android:layout_marginStart="1dp"
+        android:layout_marginTop="340dp"
+        android:layout_marginEnd="1dp"
+        android:layout_toStartOf="@+id/plusTimeBtn"
+        android:layout_toEndOf="@+id/minusTimeBtn"
+        android:gravity="center_horizontal"
+        android:text="@string/_0"
+        android:textAlignment="center"
+        android:textSize="38dp" />
+
+    <ImageButton
+        android:id="@+id/plusPauseBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/receive_text"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="340dp"
+        android:layout_marginEnd="101dp"
+        app:srcCompat="@android:drawable/ic_media_ff" />
+
+    <ImageButton
+        android:id="@+id/minusPauseBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/receive_text"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="97dp"
+        android:layout_marginTop="340dp"
+        app:srcCompat="@android:drawable/ic_media_rew" />
+
+    <TextView
+        android:id="@+id/voltageTxt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/receive_text"
+        android:layout_marginStart="1dp"
+        android:layout_marginTop="445dp"
+        android:layout_marginEnd="1dp"
+        android:layout_toStartOf="@+id/plusTimeBtn"
+        android:layout_toEndOf="@+id/minusTimeBtn"
+        android:gravity="center_horizontal"
+        android:text="@string/_0"
+        android:textAlignment="center"
+        android:textSize="38dp" />
+
+    <ImageButton
+        android:id="@+id/plusVoltageBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/receive_text"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="445dp"
+        android:layout_marginEnd="101dp"
+        app:srcCompat="@android:drawable/ic_media_ff" />
+
+    <ImageButton
+        android:id="@+id/minusVoltageBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/receive_text"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="97dp"
+        android:layout_marginTop="445dp"
+        app:srcCompat="@android:drawable/ic_media_rew" />
+
+    <TextView
+        android:id="@+id/timeTitleTxt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/receive_text"
+        android:layout_marginStart="1dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="1dp"
+        android:layout_toStartOf="@+id/plusTimeBtn"
+        android:layout_toEndOf="@+id/minusTimeBtn"
+        android:gravity="center_horizontal"
+        android:text="@string/vreme"
+        android:textAlignment="center"
+        android:textSize="20dp" />
+
+    <TextView
+        android:id="@+id/FrekTitleTxt"
+        android:layout_width="121dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/receive_text"
+        android:layout_marginStart="-6dp"
+        android:layout_marginTop="114dp"
+        android:layout_marginEnd="-13dp"
+        android:layout_toStartOf="@+id/plusTimeBtn"
+        android:layout_toEndOf="@+id/minusTimeBtn"
+        android:gravity="center_horizontal"
+        android:text="@string/frekvencija"
+        android:textAlignment="center"
+        android:textSize="20dp" />
+
+    <TextView
+        android:id="@+id/volatageTitleTxt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/receive_text"
+        android:layout_marginStart="1dp"
+        android:layout_marginTop="409dp"
+        android:layout_marginEnd="1dp"
+        android:layout_toStartOf="@+id/plusTimeBtn"
+        android:layout_toEndOf="@+id/minusTimeBtn"
+        android:gravity="center_horizontal"
+        android:text="@string/napon"
+        android:textAlignment="center"
+        android:textSize="20dp" />
+
+    <TextView
+        android:id="@+id/pauseTitleTxt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/receive_text"
+        android:layout_marginStart="2dp"
+        android:layout_marginTop="309dp"
+        android:layout_marginEnd="0dp"
+        android:layout_toStartOf="@+id/plusTimeBtn"
+        android:layout_toEndOf="@+id/minusTimeBtn"
+        android:gravity="center_horizontal"
+        android:text="@string/pauza"
+        android:textAlignment="center"
+        android:textSize="20dp" />
+
+    <TextView
+        android:id="@+id/impulsTitleTxt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/receive_text"
+        android:layout_marginStart="-1dp"
+        android:layout_marginTop="213dp"
+        android:layout_marginEnd="3dp"
+        android:layout_toStartOf="@+id/plusTimeBtn"
+        android:layout_toEndOf="@+id/minusTimeBtn"
+        android:gravity="center_horizontal"
+        android:text="@string/impuls"
+        android:textAlignment="center"
+        android:textSize="20dp" />
 
 
 </RelativeLayout>

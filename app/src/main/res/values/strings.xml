@@ -3,4 +3,11 @@
     <string name="devices">Dostupni urećaji</string>
     <string name="po_ni">Start</string>
     <string name="prekini">Stop</string>
+    <string name="_0">0</string>
+    <string name="vreme">Vreme</string>
+    <string name="frekvencija">Frekvencija</string>
+    <string name="impuls">Impuls</string>
+    <string name="napon">Napon</string>
+    <string name="pauza">Pauza</string>
+    <string name="impuls">Impuls</string>
 </resources>
