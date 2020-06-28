@@ -125,21 +125,37 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
         receiveText.setTextColor(getResources().getColor(R.color.colorRecieveText)); // set as default color to reduce number of spans
         receiveText.setMovementMethod(ScrollingMovementMethod.getInstance());
 
-        View sendBtn      = view.findViewById(R.id.send_btn);
-        View stopBtn      = view.findViewById(R.id.stop_btn);
-        View plusTimeBtn  = view.findViewById(R.id.plusTimeBtn);
-        View minusTimeBtn = view.findViewById(R.id.minusTimeBtn);
-        View plusFrekBtn  = view.findViewById(R.id.plusFrekBtn);
-        View minusFrekBtn = view.findViewById(R.id.minusFrekBtn);
-        TextView time     = view.findViewById(R.id.timeTxt);
-        TextView frek     = view.findViewById(R.id.frekTxt);
+        View sendBtn         = view.findViewById(R.id.send_btn);
+        View stopBtn         = view.findViewById(R.id.stop_btn);
+        View plusTimeBtn     = view.findViewById(R.id.plusTimeBtn);
+        View minusTimeBtn    = view.findViewById(R.id.minusTimeBtn);
+        View plusFrekBtn     = view.findViewById(R.id.plusFrekBtn);
+        View minusFrekBtn    = view.findViewById(R.id.minusFrekBtn);
+        View plusImpulsBtn   = view.findViewById(R.id.plusImpulsBtn);
+        View minusImpulsBtn  = view.findViewById(R.id.minusImpulsBtn);
+        View plusPauseBtn    = view.findViewById(R.id.plusPauseBtn);
+        View minusPauseBtn   = view.findViewById(R.id.minusPauseBtn);
+        View plusVoltageBtn  = view.findViewById(R.id.plusVoltageBtn);
+        View minusVoltageBtn = view.findViewById(R.id.minusVoltageBtn);
+        TextView time        = view.findViewById(R.id.timeTxt);
+        TextView frek        = view.findViewById(R.id.frekTxt);
+        TextView impuls      = view.findViewById(R.id.impulsTxt);
+        TextView pause        = view.findViewById(R.id.pauseTxt);
+        TextView voltage      = view.findViewById(R.id.voltageTxt);
 
         plusTimeBtn.setOnClickListener(v -> Steps(time, "+", 10, 0, 120));
         minusTimeBtn.setOnClickListener(v -> Steps(time, "-", 10, 0, 120));
-        plusFrekBtn.setOnClickListener(v -> Steps(frek, "+", 10, 10, 120));
+        plusFrekBtn.setOnClickListener(v -> Steps(frek, "+", 10, 100, 1200));
+        minusFrekBtn.setOnClickListener(v -> Steps(frek, "-", 10, 100, 1200));
+        plusImpulsBtn.setOnClickListener(v -> Steps(impuls, "+", 1, 0, 25));
+        minusImpulsBtn.setOnClickListener(v -> Steps(impuls, "-", 1, 0, 25));
+        plusPauseBtn.setOnClickListener(v -> Steps(pause, "+", 1, 0, 25));
+        minusPauseBtn.setOnClickListener(v -> Steps(pause, "-", 1, 0, 25));
+        plusVoltageBtn.setOnClickListener(v -> Steps(voltage, "+", 1, 10, 35));
+        minusVoltageBtn.setOnClickListener(v -> Steps(voltage, "-", 1, 10, 35));
 
         stopBtn.setOnClickListener(v -> send(stop));
-        sendBtn.setOnClickListener(v -> send(start));
+        sendBtn.setOnClickListener(v -> send(start + "t" + time.getText() + "f" + frek.getText() + "i" + impuls.getText() + "p" + pause.getText() + "n" + voltage.getText()));
 
         return view;
     }
@@ -149,28 +165,7 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
         inflater.inflate(R.menu.menu_terminal, menu);
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        if (id == R.id.clear) {
-            receiveText.setText("");
-            return true;
-        } else if (id ==R.id.newline) {
-            String[] newlineNames = getResources().getStringArray(R.array.newline_names);
-            String[] newlineValues = getResources().getStringArray(R.array.newline_values);
-            int pos = java.util.Arrays.asList(newlineValues).indexOf(newline);
-            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-            builder.setTitle("Newline");
-            builder.setSingleChoiceItems(newlineNames, pos, (dialog, item1) -> {
-                newline = newlineValues[item1];
-                dialog.dismiss();
-            });
-            builder.create().show();
-            return true;
-        } else {
-            return super.onOptionsItemSelected(item);
-        }
-    }
+
 
     /*
      * Serial + UI
@@ -250,21 +245,22 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
     }
 
     public void Steps(TextView a, String s, int Step, int minValue, int maxValue){
-        String currentTime = (String) a.getText();
-        int time = Integer.parseInt(currentTime);
+        String currentValue = (String) a.getText();
+        int time = Integer.parseInt(currentValue);
         if (s == "+"){
             if (time < maxValue){
                 time = time + Step;
-                currentTime = String.valueOf(time);
-                a.setText(currentTime);
+                currentValue = String.valueOf(time);
+                a.setText(currentValue);
             }
         }else if (s == "-"){
             if (time > minValue){
                 time = time - Step;
-                currentTime = String.valueOf(time);
-                a.setText(currentTime);
+                currentValue = String.valueOf(time);
+                a.setText(currentValue);
             }
         }
+
 
     }
 
