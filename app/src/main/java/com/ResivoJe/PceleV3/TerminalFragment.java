@@ -31,7 +31,14 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
     private enum Connected { False, Pending, True }
 
     private String deviceAddress;
+    private String[] devicesAddresses;
     private String newline = "\r\n";
+
+
+
+    private String deviceToConnect;
+    private String messageToSend;
+
 
     private TextView receiveText;
 
@@ -53,6 +60,7 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
         setHasOptionsMenu(true);
         setRetainInstance(true);
         deviceAddress = getArguments().getString("device");
+        devicesAddresses = getArguments().getStringArray("devices");
     }
 
     @Override
@@ -126,6 +134,7 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
         receiveText.setMovementMethod(ScrollingMovementMethod.getInstance());
 
         View sendBtn         = view.findViewById(R.id.send_btn);
+        View sendBtnAll      = view.findViewById(R.id.sendAll_btn);
         View stopBtn         = view.findViewById(R.id.stop_btn);
         View plusTimeBtn     = view.findViewById(R.id.plusTimeBtn);
         View minusTimeBtn    = view.findViewById(R.id.minusTimeBtn);
@@ -140,8 +149,8 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
         TextView time        = view.findViewById(R.id.timeTxt);
         TextView frek        = view.findViewById(R.id.frekTxt);
         TextView impuls      = view.findViewById(R.id.impulsTxt);
-        TextView pause        = view.findViewById(R.id.pauseTxt);
-        TextView voltage      = view.findViewById(R.id.voltageTxt);
+        TextView pause       = view.findViewById(R.id.pauseTxt);
+        TextView voltage     = view.findViewById(R.id.voltageTxt);
 
         plusTimeBtn.setOnClickListener(v -> Steps(time, "+", 10, 0, 120));
         minusTimeBtn.setOnClickListener(v -> Steps(time, "-", 10, 0, 120));
@@ -156,6 +165,8 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
 
         stopBtn.setOnClickListener(v -> send(stop));
         sendBtn.setOnClickListener(v -> send(start + "t" + time.getText() + "f" + frek.getText() + "i" + impuls.getText() + "p" + pause.getText() + "n" + voltage.getText()));
+        sendBtnAll.setOnClickListener(v -> sendAll(start + "t" + time.getText() + "f" + frek.getText() + "i" + impuls.getText() + "p" + pause.getText() + "n" + voltage.getText()));
+
 
         return view;
     }
@@ -164,8 +175,6 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_terminal, menu);
     }
-
-
 
     /*
      * Serial + UI
@@ -185,10 +194,34 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
         }
     }
 
+    /*
+     * Serial + UI
+     */
+    private void connectAndSend() {
+        try {
+            BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+            BluetoothDevice device = bluetoothAdapter.getRemoteDevice(deviceToConnect);
+            String deviceName = device.getName() != null ? device.getName() : device.getAddress();
+            status("Povezivanje...");
+            connected = Connected.Pending;
+            socket = new SerialSocket();
+            service.connect(this, "Povezano sa " + deviceName);
+            socket.connect(getContext(), service, device);
+            Thread.sleep(5000);
+            onSerialConnect();
+            send(messageToSend);
+            disconnect();
+        } catch (Exception e) {
+            onSerialConnectError(e);
+        }
+    }
+
     private void disconnect() {
         connected = Connected.False;
-        service.disconnect();
-        socket.disconnect();
+        if (service != null)
+            service.disconnect();
+        if (socket != null)
+            socket.disconnect();
         socket = null;
     }
 
@@ -206,6 +239,16 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
         } catch (Exception e) {
             onSerialIoError(e);
         }
+    }
+
+
+    private void sendAll(String str){
+        disconnect();
+        messageToSend = str;
+         for(int i = 0; i < devicesAddresses.length; i++){
+             deviceToConnect = devicesAddresses[i];
+             getActivity().runOnUiThread(this::connectAndSend);
+         }
     }
 
     private void receive(byte[] data) {

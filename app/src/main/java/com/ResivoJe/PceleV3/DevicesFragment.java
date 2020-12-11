@@ -27,46 +27,47 @@ public class DevicesFragment extends ListFragment {
     private ArrayList<BluetoothDevice> AllDevice = new ArrayList<>();
     private ArrayList<BluetoothDevice> ValidDevice = new ArrayList<>();
     private ArrayAdapter<BluetoothDevice> listAdapter;
-    Pattern sPattern = Pattern.compile("^BSram0000(\\d{2})$");
+    Pattern sPattern = Pattern.compile("^BSRAM(\\d{5,7})$");
+    Pattern mPattern = Pattern.compile("^BSram(\\d{5,7})$");
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        if(getActivity().getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH))
+        if (getActivity().getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH)) {
             bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
             Set<BluetoothDevice> pairedDevices = bluetoothAdapter.getBondedDevices();
             if (pairedDevices.size() > 0) {
-            // There are paired devices. Get the name and address of each paired device.
+                // There are paired devices. Get the name and address of each paired device.
                 for (BluetoothDevice device : pairedDevices) {
                     String deviceName = device.getName();
-                    if(isValid(deviceName)){
+                    if (isValid(deviceName)) {
                         ValidDevice.add(device);
                     }
                 }
             }
             listAdapter = new ArrayAdapter<BluetoothDevice>(getActivity(), 0, ValidDevice) {
-            @Override
-            public View getView(int p, View view, ViewGroup parent) {
+                @Override
+                public View getView(int p, View view, ViewGroup parent) {
 
-                    for (int i = 0; i < ValidDevice.size(); i++){
-                        if (view == null){
+                        if (view == null) {
                             view = getActivity().getLayoutInflater().inflate(R.layout.device_list_item, parent, false);
                         }
-                        BluetoothDevice device = ValidDevice.get(i);
+                        BluetoothDevice device = ValidDevice.get(p);
                         TextView text1 = view.findViewById(R.id.text1);
                         TextView text2 = view.findViewById(R.id.text2);
                         text1.setText(device.getName());
                         text2.setText(device.getAddress());
-                        return view;
-                    }
+
                     return view;
-            }
-        };
+                }
+            };
+
+        }
     }
 
     boolean isValid(CharSequence s) {
-        return sPattern.matcher(s).matches();
+        return sPattern.matcher(s).matches() || mPattern.matcher(s).matches();
     }
 
     @Override
@@ -111,7 +112,7 @@ public class DevicesFragment extends ListFragment {
             return super.onOptionsItemSelected(item);
         }
     }
-
+     //dodaj dugme za refres
     void refresh() {
         AllDevice.clear();
         if(bluetoothAdapter != null) {
@@ -125,9 +126,13 @@ public class DevicesFragment extends ListFragment {
 
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
-        BluetoothDevice device = AllDevice.get(position-1);
+        BluetoothDevice device = ValidDevice.get(position-1);
         Bundle args = new Bundle();
         args.putString("device", device.getAddress());
+        String[] devices = new String[ValidDevice.size()];
+        for (int i = 0; i < ValidDevice.size(); i++)
+            devices[i] = ValidDevice.get(i).getAddress();
+        args.putStringArray("devices",devices);
         Fragment fragment = new TerminalFragment();
         fragment.setArguments(args);
         getFragmentManager().beginTransaction().replace(R.id.fragment, fragment, "terminal").addToBackStack(null).commit();
