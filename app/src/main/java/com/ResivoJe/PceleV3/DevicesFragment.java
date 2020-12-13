@@ -13,6 +13,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -63,7 +64,10 @@ public class DevicesFragment extends ListFragment {
                 }
             };
 
+
         }
+
+
     }
 
     boolean isValid(CharSequence s) {
@@ -79,6 +83,10 @@ public class DevicesFragment extends ListFragment {
         setEmptyText("initializing...");
         ((TextView) getListView().getEmptyView()).setTextSize(18);
         setListAdapter(listAdapter);
+        if (ValidDevice.size() > 0){
+            Button button = header.findViewById(R.id.chooseAll_btn2);
+            button.setOnClickListener(v -> chooseAllBtn());
+        }
     }
 
     @Override
@@ -103,7 +111,20 @@ public class DevicesFragment extends ListFragment {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        if (id == R.id.bt_settings) {
+        switch (id) {
+            case R.id.bt_settings:
+                Intent intent = new Intent();
+                intent.setAction(android.provider.Settings.ACTION_BLUETOOTH_SETTINGS);
+                startActivity(intent);
+                return true;
+            case R.id.clear:
+                refresh();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+        /*if (id == R.id.bt_settings) {
             Intent intent = new Intent();
             intent.setAction(android.provider.Settings.ACTION_BLUETOOTH_SETTINGS);
             startActivity(intent);
@@ -111,7 +132,13 @@ public class DevicesFragment extends ListFragment {
         } else {
             return super.onOptionsItemSelected(item);
         }
-    }
+        if (id == R.id.clear) {
+            refresh();
+            return true;
+        } else {
+            return super.onOptionsItemSelected(item);
+        }*/
+
      //dodaj dugme za refres
     void refresh() {
         AllDevice.clear();
@@ -128,6 +155,21 @@ public class DevicesFragment extends ListFragment {
     public void onListItemClick(ListView l, View v, int position, long id) {
         BluetoothDevice device = ValidDevice.get(position-1);
         Bundle args = new Bundle();
+        args.putBoolean("sendAll",false);
+        args.putString("device", device.getAddress());
+        String[] devices = new String[ValidDevice.size()];
+        for (int i = 0; i < ValidDevice.size(); i++)
+            devices[i] = ValidDevice.get(i).getAddress();
+        args.putStringArray("devices",devices);
+        Fragment fragment = new TerminalFragment();
+        fragment.setArguments(args);
+        getFragmentManager().beginTransaction().replace(R.id.fragment, fragment, "terminal").addToBackStack(null).commit();
+    }
+
+    public void chooseAllBtn() {
+        BluetoothDevice device = ValidDevice.get(0);
+        Bundle args = new Bundle();
+        args.putBoolean("sendAll",true);
         args.putString("device", device.getAddress());
         String[] devices = new String[ValidDevice.size()];
         for (int i = 0; i < ValidDevice.size(); i++)

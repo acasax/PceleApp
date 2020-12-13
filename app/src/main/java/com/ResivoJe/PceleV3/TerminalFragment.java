@@ -8,6 +8,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.IBinder;
 import androidx.annotation.NonNull;
@@ -23,6 +24,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -33,7 +35,7 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
     private String deviceAddress;
     private String[] devicesAddresses;
     private String newline = "\r\n";
-
+    private boolean sendAllBoolean = false;
 
 
     private String deviceToConnect;
@@ -61,6 +63,7 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
         setRetainInstance(true);
         deviceAddress = getArguments().getString("device");
         devicesAddresses = getArguments().getStringArray("devices");
+        sendAllBoolean = getArguments().getBoolean("sendAll");
     }
 
     @Override
@@ -105,7 +108,8 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
         super.onResume();
         if(initialStart && service !=null) {
             initialStart = false;
-            getActivity().runOnUiThread(this::connect);
+            if (!sendAllBoolean)
+                getActivity().runOnUiThread(this::connect);
         }
     }
 
@@ -114,7 +118,8 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
         service = ((SerialService.SerialBinder) binder).getService();
         if(initialStart && isResumed()) {
             initialStart = false;
-            getActivity().runOnUiThread(this::connect);
+            if (!sendAllBoolean)
+                getActivity().runOnUiThread(this::connect);
         }
     }
 
@@ -163,11 +168,21 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
         plusVoltageBtn.setOnClickListener(v -> Steps(voltage, "+", 1, 10, 35));
         minusVoltageBtn.setOnClickListener(v -> Steps(voltage, "-", 1, 10, 35));
 
-        stopBtn.setOnClickListener(v -> send(stop));
+        if (sendAllBoolean)
+            stopBtn.setOnClickListener(v -> sendAll(stop));
+        else
+            stopBtn.setOnClickListener(v -> send(stop));
         sendBtn.setOnClickListener(v -> send(start + "t" + time.getText() + "f" + frek.getText() + "i" + impuls.getText() + "p" + pause.getText() + "n" + voltage.getText()));
         sendBtnAll.setOnClickListener(v -> sendAll(start + "t" + time.getText() + "f" + frek.getText() + "i" + impuls.getText() + "p" + pause.getText() + "n" + voltage.getText()));
 
-
+        if (sendAllBoolean){
+            sendBtn.setBackgroundColor(Color.RED);
+            sendBtn.setEnabled(false);
+        }
+        else{
+            sendBtnAll.setBackgroundColor(Color.RED);
+            sendBtnAll.setEnabled(false);
+        }
         return view;
     }
 
@@ -210,7 +225,9 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
             Thread.sleep(5000);
             onSerialConnect();
             send(messageToSend);
+            Thread.sleep(2000);
             disconnect();
+            Toast.makeText(getActivity(), "Poruka poslata " + device.getName(), Toast.LENGTH_SHORT).show();
         } catch (Exception e) {
             onSerialConnectError(e);
         }
@@ -243,12 +260,17 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
 
 
     private void sendAll(String str){
-        disconnect();
         messageToSend = str;
          for(int i = 0; i < devicesAddresses.length; i++){
              deviceToConnect = devicesAddresses[i];
              getActivity().runOnUiThread(this::connectAndSend);
          }
+         getActivity().runOnUiThread(new Runnable() {
+             @Override
+             public void run() {
+                 Toast.makeText(getActivity(), "Zavrseno", Toast.LENGTH_SHORT).show();
+             }
+         });
     }
 
     private void receive(byte[] data) {
