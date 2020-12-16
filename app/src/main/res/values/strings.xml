@@ -1,14 +1,14 @@
 <resources>
-    <string name="app_name">Pčele</string>
+    <string name="app_name">BS sakupljač otrova</string>
     <string name="devices">Dostupni urećaji</string>
     <string name="po_ni">Start</string>
     <string name="prekini">Stop</string>
     <string name="_0">0</string>
-    <string name="vreme">Vreme</string>
-    <string name="frekvencija">Frekvencija</string>
-    <string name="impuls">Impuls</string>
-    <string name="napon">Napon</string>
-    <string name="pauza">Pauza</string>
+    <string name="vreme">Vreme (min)</string>
+    <string name="frekvencija">Frekvencija (Hz)</string>
+    <string name="impuls">Impuls (s)</string>
+    <string name="napon">Napon (V)</string>
+    <string name="pauza">Pauza (s)</string>
     <string name="_10">100</string>
     <string name="start_all">START ALL</string>
 </resources>
