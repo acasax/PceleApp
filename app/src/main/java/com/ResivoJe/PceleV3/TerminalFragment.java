@@ -11,9 +11,11 @@ import android.content.ServiceConnection;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.IBinder;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.method.ScrollingMovementMethod;
@@ -30,17 +32,19 @@ import android.widget.Toast;
 
 public class TerminalFragment extends Fragment implements ServiceConnection, SerialListener {
 
-    private enum Connected { False, Pending, True }
+    private enum Connected {False, Pending, True}
 
     private String deviceAddress;
     private String[] devicesAddresses;
     private String newline = "\r\n";
     private boolean sendAllBoolean = false;
-
+    View sendBtn;
+    View sendBtnAll;
+    View stopBtn;
 
     private String deviceToConnect;
     private String messageToSend;
-
+    private boolean sendAllStarted = false;
 
     private TextView receiveText;
 
@@ -51,7 +55,7 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
 
     //Data for send
     String start = "s";
-    String stop  = "x";
+    String stop = "x";
 
     /*
      * Lifecycle
@@ -77,7 +81,7 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
     @Override
     public void onStart() {
         super.onStart();
-        if(service != null)
+        if (service != null)
             service.attach(this);
         else
             getActivity().startService(new Intent(getActivity(), SerialService.class)); // prevents service destroy on unbind from recreated activity caused by orientation change
@@ -85,12 +89,13 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
 
     @Override
     public void onStop() {
-        if(service != null && !getActivity().isChangingConfigurations())
+        if (service != null && !getActivity().isChangingConfigurations())
             service.detach();
         super.onStop();
     }
 
-    @SuppressWarnings("deprecation") // onAttach(context) was added with API 23. onAttach(activity) works for all API versions
+    @SuppressWarnings("deprecation")
+    // onAttach(context) was added with API 23. onAttach(activity) works for all API versions
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
@@ -99,14 +104,17 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
 
     @Override
     public void onDetach() {
-        try { getActivity().unbindService(this); } catch(Exception ignored) {}
+        try {
+            getActivity().unbindService(this);
+        } catch (Exception ignored) {
+        }
         super.onDetach();
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        if(initialStart && service !=null) {
+        if (initialStart && service != null) {
             initialStart = false;
             if (!sendAllBoolean)
                 getActivity().runOnUiThread(this::connect);
@@ -116,7 +124,7 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
     @Override
     public void onServiceConnected(ComponentName name, IBinder binder) {
         service = ((SerialService.SerialBinder) binder).getService();
-        if(initialStart && isResumed()) {
+        if (initialStart && isResumed()) {
             initialStart = false;
             if (!sendAllBoolean)
                 getActivity().runOnUiThread(this::connect);
@@ -138,24 +146,24 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
         receiveText.setTextColor(getResources().getColor(R.color.colorRecieveText)); // set as default color to reduce number of spans
         receiveText.setMovementMethod(ScrollingMovementMethod.getInstance());
 
-        View sendBtn         = view.findViewById(R.id.send_btn);
-        View sendBtnAll      = view.findViewById(R.id.sendAll_btn);
-        View stopBtn         = view.findViewById(R.id.stop_btn);
-        View plusTimeBtn     = view.findViewById(R.id.plusTimeBtn);
-        View minusTimeBtn    = view.findViewById(R.id.minusTimeBtn);
-        View plusFrekBtn     = view.findViewById(R.id.plusFrekBtn);
-        View minusFrekBtn    = view.findViewById(R.id.minusFrekBtn);
-        View plusImpulsBtn   = view.findViewById(R.id.plusImpulsBtn);
-        View minusImpulsBtn  = view.findViewById(R.id.minusImpulsBtn);
-        View plusPauseBtn    = view.findViewById(R.id.plusPauseBtn);
-        View minusPauseBtn   = view.findViewById(R.id.minusPauseBtn);
-        View plusVoltageBtn  = view.findViewById(R.id.plusVoltageBtn);
+        sendBtn = view.findViewById(R.id.send_btn);
+        sendBtnAll = view.findViewById(R.id.sendAll_btn);
+        stopBtn = view.findViewById(R.id.stop_btn);
+        View plusTimeBtn = view.findViewById(R.id.plusTimeBtn);
+        View minusTimeBtn = view.findViewById(R.id.minusTimeBtn);
+        View plusFrekBtn = view.findViewById(R.id.plusFrekBtn);
+        View minusFrekBtn = view.findViewById(R.id.minusFrekBtn);
+        View plusImpulsBtn = view.findViewById(R.id.plusImpulsBtn);
+        View minusImpulsBtn = view.findViewById(R.id.minusImpulsBtn);
+        View plusPauseBtn = view.findViewById(R.id.plusPauseBtn);
+        View minusPauseBtn = view.findViewById(R.id.minusPauseBtn);
+        View plusVoltageBtn = view.findViewById(R.id.plusVoltageBtn);
         View minusVoltageBtn = view.findViewById(R.id.minusVoltageBtn);
-        TextView time        = view.findViewById(R.id.timeTxt);
-        TextView frek        = view.findViewById(R.id.frekTxt);
-        TextView impuls      = view.findViewById(R.id.impulsTxt);
-        TextView pause       = view.findViewById(R.id.pauseTxt);
-        TextView voltage     = view.findViewById(R.id.voltageTxt);
+        TextView time = view.findViewById(R.id.timeTxt);
+        TextView frek = view.findViewById(R.id.frekTxt);
+        TextView impuls = view.findViewById(R.id.impulsTxt);
+        TextView pause = view.findViewById(R.id.pauseTxt);
+        TextView voltage = view.findViewById(R.id.voltageTxt);
 
         plusTimeBtn.setOnClickListener(v -> Steps(time, "+", 10, 0, 120));
         minusTimeBtn.setOnClickListener(v -> Steps(time, "-", 10, 0, 120));
@@ -175,11 +183,10 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
         sendBtn.setOnClickListener(v -> send(start + "t" + time.getText() + "f" + frek.getText() + "i" + impuls.getText() + "p" + pause.getText() + "n" + voltage.getText()));
         sendBtnAll.setOnClickListener(v -> sendAll(start + "t" + time.getText() + "f" + frek.getText() + "i" + impuls.getText() + "p" + pause.getText() + "n" + voltage.getText()));
 
-        if (sendAllBoolean){
+        if (sendAllBoolean) {
             sendBtn.setBackgroundColor(Color.RED);
             sendBtn.setEnabled(false);
-        }
-        else{
+        } else {
             sendBtnAll.setBackgroundColor(Color.RED);
             sendBtnAll.setEnabled(false);
         }
@@ -222,7 +229,7 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
             socket = new SerialSocket();
             service.connect(this, "Povezano sa " + deviceName);
             socket.connect(getContext(), service, device);
-            Thread.sleep(5000);
+            Thread.sleep(8000);
             onSerialConnect();
             send(messageToSend);
             Thread.sleep(2000);
@@ -243,12 +250,12 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
     }
 
     private void send(String str) {
-        if(connected != Connected.True) {
+        if (connected != Connected.True) {
             Toast.makeText(getActivity(), "nije povezano", Toast.LENGTH_SHORT).show();
             return;
         }
         try {
-            SpannableStringBuilder spn = new SpannableStringBuilder(str+'\n');
+            SpannableStringBuilder spn = new SpannableStringBuilder(str + '\n');
             spn.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.colorSendText)), 0, spn.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             receiveText.setText(spn);
             byte[] data = (str + newline).getBytes();
@@ -259,18 +266,19 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
     }
 
 
-    private void sendAll(String str){
+    public void sendAll(String str) {
+
         messageToSend = str;
-         for(int i = 0; i < devicesAddresses.length; i++){
-             deviceToConnect = devicesAddresses[i];
-             getActivity().runOnUiThread(this::connectAndSend);
-         }
-         getActivity().runOnUiThread(new Runnable() {
-             @Override
-             public void run() {
-                 Toast.makeText(getActivity(), "Zavrseno", Toast.LENGTH_SHORT).show();
-             }
-         });
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                for (int i = 0; i < devicesAddresses.length; i++) {
+                    deviceToConnect = devicesAddresses[i];
+                    connectAndSend();
+                }
+                Toast.makeText(getActivity(), "Zavrseno", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void receive(byte[] data) {
@@ -278,7 +286,7 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
     }
 
     private void status(String str) {
-        SpannableStringBuilder spn = new SpannableStringBuilder(str+'\n');
+        SpannableStringBuilder spn = new SpannableStringBuilder(str + '\n');
         spn.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.colorStatusText)), 0, spn.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         receiveText.setText(spn);
     }
@@ -309,17 +317,17 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
         disconnect();
     }
 
-    public void Steps(TextView a, String s, int Step, int minValue, int maxValue){
+    public void Steps(TextView a, String s, int Step, int minValue, int maxValue) {
         String currentValue = (String) a.getText();
         int time = Integer.parseInt(currentValue);
-        if (s == "+"){
-            if (time < maxValue){
+        if (s == "+") {
+            if (time < maxValue) {
                 time = time + Step;
                 currentValue = String.valueOf(time);
                 a.setText(currentValue);
             }
-        }else if (s == "-"){
-            if (time > minValue){
+        } else if (s == "-") {
+            if (time > minValue) {
                 time = time - Step;
                 currentValue = String.valueOf(time);
                 a.setText(currentValue);
