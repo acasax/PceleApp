@@ -100,11 +100,11 @@ public class DevicesFragment extends ListFragment {
     public void onResume() {
         super.onResume();
         if(bluetoothAdapter == null)
-            setEmptyText("<Blutut nije dostupan na ovom urećaju>");
+            setEmptyText("<Blutut nije dostupan na ovom uređaju>");
         else if(!bluetoothAdapter.isEnabled())
             setEmptyText("<Blutut je ugašen>");
         else
-            setEmptyText("<Nema pronaćenih urećaja>");
+            setEmptyText("<Nema pronađenih uređaja>");
         refresh();
     }
 

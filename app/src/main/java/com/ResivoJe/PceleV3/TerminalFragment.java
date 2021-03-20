@@ -38,9 +38,11 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
     private String[] devicesAddresses;
     private String newline = "\r\n";
     private boolean sendAllBoolean = false;
-    View sendBtn;
-    View sendBtnAll;
-    View stopBtn;
+    Button sendBtn;
+    Button sendBtnAll;
+    Button stopBtn;
+    Button getBtn;
+    Object syncObject = new Object();
 
     private String deviceToConnect;
     private String messageToSend;
@@ -52,10 +54,13 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
     private SerialService service;
     private boolean initialStart = true;
     private Connected connected = Connected.False;
-
+    private String answerText = "";
     //Data for send
-    String start = "s";
-    String stop = "x";
+    String start = "S";
+    String stop = "X";
+    String get = "G";
+    String begin = "<";
+    String end = ">";
 
     /*
      * Lifecycle
@@ -149,6 +154,7 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
         sendBtn = view.findViewById(R.id.send_btn);
         sendBtnAll = view.findViewById(R.id.sendAll_btn);
         stopBtn = view.findViewById(R.id.stop_btn);
+        getBtn = view.findViewById(R.id.get_btn);
         View plusTimeBtn = view.findViewById(R.id.plusTimeBtn);
         View minusTimeBtn = view.findViewById(R.id.minusTimeBtn);
         View plusFrekBtn = view.findViewById(R.id.plusFrekBtn);
@@ -165,23 +171,42 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
         TextView pause = view.findViewById(R.id.pauseTxt);
         TextView voltage = view.findViewById(R.id.voltageTxt);
 
-        plusTimeBtn.setOnClickListener(v -> Steps(time, "+", 10, 0, 120));
-        minusTimeBtn.setOnClickListener(v -> Steps(time, "-", 10, 0, 120));
+        plusTimeBtn.setOnClickListener(v -> Steps(time, "+", 1, 1, 255));
+        minusTimeBtn.setOnClickListener(v -> Steps(time, "-", 1, 1, 255));
         plusFrekBtn.setOnClickListener(v -> Steps(frek, "+", 10, 100, 1200));
         minusFrekBtn.setOnClickListener(v -> Steps(frek, "-", 10, 100, 1200));
-        plusImpulsBtn.setOnClickListener(v -> Steps(impuls, "+", 1, 0, 25));
-        minusImpulsBtn.setOnClickListener(v -> Steps(impuls, "-", 1, 0, 25));
-        plusPauseBtn.setOnClickListener(v -> Steps(pause, "+", 1, 0, 25));
-        minusPauseBtn.setOnClickListener(v -> Steps(pause, "-", 1, 0, 25));
-        plusVoltageBtn.setOnClickListener(v -> Steps(voltage, "+", 1, 10, 35));
-        minusVoltageBtn.setOnClickListener(v -> Steps(voltage, "-", 1, 10, 35));
+        plusImpulsBtn.setOnClickListener(v -> Steps(impuls, "+", 1, 1, 25));
+        minusImpulsBtn.setOnClickListener(v -> Steps(impuls, "-", 1, 1, 25));
+        plusPauseBtn.setOnClickListener(v -> Steps(pause, "+", 1, 0, 10));
+        minusPauseBtn.setOnClickListener(v -> Steps(pause, "-", 1, 0, 10));
+        plusVoltageBtn.setOnClickListener(v -> Steps(voltage, "+", 1, 0, 255));
+        minusVoltageBtn.setOnClickListener(v -> Steps(voltage, "-", 1, 0, 255));
 
-        if (sendAllBoolean)
-            stopBtn.setOnClickListener(v -> sendAll(stop));
-        else
-            stopBtn.setOnClickListener(v -> send(stop));
-        sendBtn.setOnClickListener(v -> send(start + "t" + time.getText() + "f" + frek.getText() + "i" + impuls.getText() + "p" + pause.getText() + "n" + voltage.getText()));
-        sendBtnAll.setOnClickListener(v -> sendAll(start + "t" + time.getText() + "f" + frek.getText() + "i" + impuls.getText() + "p" + pause.getText() + "n" + voltage.getText()));
+        if (sendAllBoolean) {
+            stopBtn.setOnClickListener(v -> sendAll(begin + stop + end));
+            getBtn.setOnClickListener(v -> sendAll(begin + get + end));
+        }
+        else {
+            stopBtn.setOnClickListener(v -> send(begin + stop + end));
+            getBtn.setOnClickListener(v -> send(begin + get + end));
+        }
+        sendBtn.setOnClickListener(v -> send(begin +
+                start +  ";" +
+                "T" + time.getText() + ";" +
+                "I" + impuls.getText() + ";" +
+                "P" + pause.getText() + ";" +
+                "F" + frek.getText() + ";" +
+                "V" + voltage.getText() +
+                end));
+
+        sendBtnAll.setOnClickListener(v -> sendAll(begin +
+                start +  ";" +
+                "T" + time.getText() + ";" +
+                "I" + impuls.getText() + ";" +
+                "P" + pause.getText() + ";" +
+                "F" + frek.getText() + ";" +
+                "V" + voltage.getText() +
+                end));
 
         if (sendAllBoolean) {
             sendBtn.setBackgroundColor(Color.RED);
@@ -229,12 +254,38 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
             socket = new SerialSocket();
             service.connect(this, "Povezano sa " + deviceName);
             socket.connect(getContext(), service, device);
-            Thread.sleep(8000);
-            onSerialConnect();
-            send(messageToSend);
-            Thread.sleep(2000);
-            disconnect();
-            Toast.makeText(getActivity(), "Poruka poslata " + device.getName(), Toast.LENGTH_SHORT).show();
+
+            synchronized(syncObject) {
+                try {
+                    // Calling wait() will block this thread until another thread
+                    // calls notify() on the object.
+                    syncObject.wait();
+                } catch (InterruptedException e) {
+                    // Happens if someone interrupts your thread.
+                }
+            }
+
+            if (connected == Connected.True) {
+                send(messageToSend);
+
+                Thread.sleep(2000);
+
+                disconnect();
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(getActivity(), "Poruka poslata " + device.getName(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+            else {
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(getActivity(), "Poruka nije poslata " + device.getName(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
         } catch (Exception e) {
             onSerialConnectError(e);
         }
@@ -257,7 +308,15 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
         try {
             SpannableStringBuilder spn = new SpannableStringBuilder(str + '\n');
             spn.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.colorSendText)), 0, spn.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-            receiveText.setText(spn);
+
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    receiveText.setText(spn);
+                }
+            });
+
+            answerText = "";
             byte[] data = (str + newline).getBytes();
             socket.write(data);
         } catch (Exception e) {
@@ -269,26 +328,87 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
     public void sendAll(String str) {
 
         messageToSend = str;
-        getActivity().runOnUiThread(new Runnable() {
+        new Thread(new Runnable() {
             @Override
             public void run() {
                 for (int i = 0; i < devicesAddresses.length; i++) {
                     deviceToConnect = devicesAddresses[i];
                     connectAndSend();
+                    // wait
                 }
-                Toast.makeText(getActivity(), "Zavrseno", Toast.LENGTH_SHORT).show();
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(getActivity(), "Završeno", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+        }).start();
+    }
+
+    private void receive(byte[] data) {
+        answerText += new String (data);
+        checkAnswer();
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                receiveText.setText(answerText);
             }
         });
     }
 
-    private void receive(byte[] data) {
-        receiveText.setText(new String(data));
+    private void checkAnswer() {
+        if (answerText.contains(">")){
+            answerText = answerText.replace("<","");
+            answerText = answerText.replace(">","");
+            String[] parts = answerText.split(";");
+            // error handling
+            if (parts.length < 1) answerText = "Nepoznata greska.";
+            parts[0] = parts[0].replace("E","");
+            String error = "";
+            switch (parts[0]){
+                case "0": error = "Uspesno ste poslali komandu. \n"; break;
+                case "1": error = "Poruka nije u dobrom formatu. \n"; break;
+                case "2": error = "Greska u zadatim parametrima. \n"; break;
+                case "3": error = "Komanda se ne moze izvrsiti. \n"; break;
+                default : error = "Nepoznata greska.";
+            }
+            if (parts[0].equals("0")) {
+                String deviceState = "";
+                parts[1] = parts[1].replace("A", "");
+                if (parts[1].equals("0")) {
+                    deviceState = "Uredjaj ne radi. \n";
+                } else {
+                    deviceState = "Uredjaj radi. \n";
+                }
+                parts[2] = parts[2].replace("R", "");
+
+                String cycle;
+                if (parts.length < 4) {
+                    cycle = "";
+                }
+                else {
+                    parts[3] = parts[3].replace("C", "");
+                    cycle = "Odradjeno " + parts[3] + " ciklusa.\n";
+                }
+                String timeLeft = "Preostalo " + parts[2] + " min rada uredjaja. \n";
+                answerText = error + deviceState + timeLeft + cycle;
+            }
+            else {
+                answerText = error;
+            }
+        }
     }
 
     private void status(String str) {
-        SpannableStringBuilder spn = new SpannableStringBuilder(str + '\n');
-        spn.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.colorStatusText)), 0, spn.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        receiveText.setText(spn);
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                SpannableStringBuilder spn = new SpannableStringBuilder(str + '\n');
+                spn.setSpan(new ForegroundColorSpan(getResources().getColor(R.color.colorStatusText)), 0, spn.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                receiveText.setText(spn);
+            }
+        });
     }
 
     /*
@@ -298,11 +418,28 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
     public void onSerialConnect() {
         status("Povezano");
         connected = Connected.True;
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                synchronized(syncObject) {
+                    syncObject.notify();
+                }
+            }
+        }).start();
+
     }
 
     @Override
     public void onSerialConnectError(Exception e) {
         status("Greška: " + e.getMessage());
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                synchronized(syncObject) {
+                    syncObject.notify();
+                }
+            }
+        }).start();
         disconnect();
     }
 

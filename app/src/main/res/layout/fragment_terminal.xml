@@ -190,7 +190,7 @@
                     android:layout_marginLeft="15dp"
                     android:layout_marginRight="15dp"
                     android:gravity="center_horizontal"
-                    android:text="@string/_0"
+                    android:text="0"
                     android:textAlignment="center"
                     android:textSize="32sp" />
 
@@ -267,16 +267,6 @@
             android:textColor="@color/black" />
 
         <Button
-            android:id="@+id/stop_btn"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20px"
-            android:background="@color/colorPrimary"
-            android:text="@string/prekini"
-            android:layout_weight="1"
-            android:textColor="@color/black" />
-
-        <Button
             android:id="@+id/send_btn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -284,6 +274,26 @@
             android:layout_weight="1"
             android:background="@color/colorPrimary"
             android:text="@string/po_ni"
+            android:textColor="@color/black" />
+
+        <Button
+            android:id="@+id/get_btn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20px"
+            android:background="@color/colorPrimary"
+            android:text="@string/get"
+            android:layout_weight="1"
+            android:textColor="@color/black" />
+
+        <Button
+            android:id="@+id/stop_btn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20px"
+            android:background="@color/colorPrimary"
+            android:text="@string/prekini"
+            android:layout_weight="1"
             android:textColor="@color/black" />
     </LinearLayout>
 </LinearLayout>
