@@ -6,6 +6,7 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.graphics.Color;
@@ -30,6 +31,8 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+
 public class TerminalFragment extends Fragment implements ServiceConnection, SerialListener {
 
     private enum Connected {False, Pending, True}
@@ -43,6 +46,7 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
     Button stopBtn;
     Button getBtn;
     Object syncObject = new Object();
+    ArrayList<BluetoothDevice> failedDeviceNames = new ArrayList<>();
 
     private String deviceToConnect;
     private String messageToSend;
@@ -183,8 +187,8 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
         minusVoltageBtn.setOnClickListener(v -> Steps(voltage, "-", 1, 0, 255));
 
         if (sendAllBoolean) {
-            stopBtn.setOnClickListener(v -> sendAll(begin + stop + end));
-            getBtn.setOnClickListener(v -> sendAll(begin + get + end));
+            stopBtn.setOnClickListener(v -> sendAll(begin + stop + end, true));
+            getBtn.setOnClickListener(v -> sendAll(begin + get + end, true));
         }
         else {
             stopBtn.setOnClickListener(v -> send(begin + stop + end));
@@ -206,7 +210,7 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
                 "P" + pause.getText() + ";" +
                 "F" + frek.getText() + ";" +
                 "V" + voltage.getText() +
-                end));
+                end, true));
 
         if (sendAllBoolean) {
             sendBtn.setBackgroundColor(Color.RED);
@@ -244,10 +248,8 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
     /*
      * Serial + UI
      */
-    private void connectAndSend() {
+    private void connectAndSend(BluetoothDevice device) {
         try {
-            BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-            BluetoothDevice device = bluetoothAdapter.getRemoteDevice(deviceToConnect);
             String deviceName = device.getName() != null ? device.getName() : device.getAddress();
             status("Povezivanje...");
             connected = Connected.Pending;
@@ -279,6 +281,7 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
                 });
             }
             else {
+                failedDeviceNames.add(device);
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -325,21 +328,68 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
     }
 
 
-    public void sendAll(String str) {
-
+    public void sendAll(String str, boolean all) {
+        ArrayList<BluetoothDevice> failedDevicesCopy = (ArrayList<BluetoothDevice>) failedDeviceNames.clone();
+        failedDeviceNames.clear();
         messageToSend = str;
         new Thread(new Runnable() {
             @Override
             public void run() {
-                for (int i = 0; i < devicesAddresses.length; i++) {
-                    deviceToConnect = devicesAddresses[i];
-                    connectAndSend();
-                    // wait
+                if (all) {
+                    for (int i = 0; i < devicesAddresses.length; i++) {
+                        deviceToConnect = devicesAddresses[i];
+                        BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+                        BluetoothDevice device = bluetoothAdapter.getRemoteDevice(deviceToConnect);
+                        connectAndSend(device);
+                    }
+                }
+                else{
+                    for (int i = 0 ; i < failedDevicesCopy.size(); i++){
+                        connectAndSend(failedDevicesCopy.get(i));
+                    }
                 }
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         Toast.makeText(getActivity(), "Završeno", Toast.LENGTH_SHORT).show();
+                        AlertDialog.Builder builder1 = new AlertDialog.Builder(getContext());
+
+                        String message = "Uredjaji, koji nisu uspesno startovani su: \n";
+                        String positiveMessage = "Pokusaj Ponovo";
+                        String negativeMessage = "Odustani";
+                        for (int i = 0 ; i < failedDeviceNames.size() ;i++ )
+                        {
+                            message += failedDeviceNames.get(i).getName() + "\n";
+                        }
+                        if (failedDeviceNames.size() == 0){
+                            message = "Uspesno su startovani svi uredjaji";
+                            positiveMessage = "U redu";
+                        }
+                        builder1.setMessage(message);
+                        builder1.setCancelable(true);
+
+                        builder1.setPositiveButton(
+                                positiveMessage,
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        if (failedDeviceNames.size() > 0) {
+                                            sendAll(str, false);
+                                        }
+                                        dialog.cancel();
+                                    }
+                                });
+                        if (failedDeviceNames.size() > 0) {
+
+                            builder1.setNegativeButton(
+                                    negativeMessage,
+                                    new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int id) {
+                                            dialog.cancel();
+                                        }
+                                    });
+                        }
+                        AlertDialog alert11 = builder1.create();
+                        alert11.show();
                     }
                 });
             }
