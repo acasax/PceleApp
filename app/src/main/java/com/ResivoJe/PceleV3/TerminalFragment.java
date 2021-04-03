@@ -21,10 +21,12 @@ import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.method.ScrollingMovementMethod;
 import android.text.style.ForegroundColorSpan;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -32,6 +34,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+
+import static java.lang.Thread.*;
 
 public class TerminalFragment extends Fragment implements ServiceConnection, SerialListener {
 
@@ -47,11 +51,13 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
     Button getBtn;
     Object syncObject = new Object();
     ArrayList<BluetoothDevice> failedDeviceNames = new ArrayList<>();
+    ArrayList<BluetoothDevice> successDeviceNames = new ArrayList<>();
+    private boolean isGet = false;
 
     private String deviceToConnect;
     private String messageToSend;
     private boolean sendAllStarted = false;
-
+    private int counter = 0;
     private TextView receiveText;
 
     private SerialSocket socket;
@@ -148,6 +154,21 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
     /*
      * UI
      */
+
+    public boolean checkEvent (MotionEvent event){
+        if (event.getAction() == MotionEvent.ACTION_DOWN){
+            counter = 0;
+            return true;
+        }
+        if (event.getAction() == MotionEvent.ACTION_MOVE) {
+            counter++;
+            if (counter > 8 && counter % 2 == 1) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_terminal, container, false);
@@ -175,20 +196,111 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
         TextView pause = view.findViewById(R.id.pauseTxt);
         TextView voltage = view.findViewById(R.id.voltageTxt);
 
-        plusTimeBtn.setOnClickListener(v -> Steps(time, "+", 1, 1, 255));
-        minusTimeBtn.setOnClickListener(v -> Steps(time, "-", 1, 1, 255));
-        plusFrekBtn.setOnClickListener(v -> Steps(frek, "+", 10, 100, 1200));
-        minusFrekBtn.setOnClickListener(v -> Steps(frek, "-", 10, 100, 1200));
-        plusImpulsBtn.setOnClickListener(v -> Steps(impuls, "+", 1, 1, 25));
-        minusImpulsBtn.setOnClickListener(v -> Steps(impuls, "-", 1, 1, 25));
-        plusPauseBtn.setOnClickListener(v -> Steps(pause, "+", 1, 0, 10));
-        minusPauseBtn.setOnClickListener(v -> Steps(pause, "-", 1, 0, 10));
-        plusVoltageBtn.setOnClickListener(v -> Steps(voltage, "+", 1, 0, 255));
-        minusVoltageBtn.setOnClickListener(v -> Steps(voltage, "-", 1, 0, 255));
+        //plusTimeBtn.setOnClickListener(v -> Steps(time, "+", 1, 1, 255));
+        //minusTimeBtn.setOnClickListener(v -> Steps(time, "-", 1, 1, 255));
+
+        //plusFrekBtn.setOnClickListener(v -> Steps(frek, "+", 10, 100, 1200));
+        //minusFrekBtn.setOnClickListener(v -> Steps(frek, "-", 10, 100, 1200));
+
+        //plusImpulsBtn.setOnClickListener(v -> Steps(impuls, "+", 1, 1, 25));
+        //minusImpulsBtn.setOnClickListener(v -> Steps(impuls, "-", 1, 1, 25));
+
+        //plusPauseBtn.setOnClickListener(v -> Steps(pause, "+", 1, 0, 10));
+        //minusPauseBtn.setOnClickListener(v -> Steps(pause, "-", 1, 0, 10));
+
+        //plusVoltageBtn.setOnClickListener(v -> Steps(voltage, "+", 1, 10, 35));
+        //minusVoltageBtn.setOnClickListener(v -> Steps(voltage, "-", 1, 10, 35));
+
+
+        //Voltage
+        plusVoltageBtn.setOnTouchListener((v, event) -> {
+            if (checkEvent(event)){
+                Steps(voltage, "+", 1, 10, 35);
+                return true;
+            }
+            return false;
+        });
+
+        minusVoltageBtn.setOnTouchListener((v, event) -> {
+            if (checkEvent(event)){
+                Steps(voltage, "-", 1, 10, 35);
+                return true;
+            }
+            return false;
+        });
+
+
+        //Pauza
+        plusPauseBtn.setOnTouchListener((v, event) -> {
+            if (checkEvent(event)){
+                Steps(pause, "+", 1, 1, 10);
+                return true;
+            }
+            return false;
+        });
+
+        minusPauseBtn.setOnTouchListener((v, event) -> {
+            if (checkEvent(event)){
+                Steps(pause, "-", 1, 1, 10);
+                return true;
+            }
+            return false;
+        });
+
+        //Impuls
+        plusImpulsBtn.setOnTouchListener((v, event) -> {
+            if (checkEvent(event)){
+                Steps(impuls, "+", 1, 1, 25);
+                return true;
+            }
+            return false;
+        });
+
+        minusImpulsBtn.setOnTouchListener((v, event) -> {
+            if (checkEvent(event)){
+                Steps(impuls, "-", 1, 1, 25);
+                return true;
+            }
+            return false;
+        });
+
+        //Frekvencija
+        plusFrekBtn.setOnTouchListener((v, event) -> {
+            if (checkEvent(event)){
+                Steps(frek, "+", 10, 100, 1200);
+                return true;
+            }
+            return false;
+        });
+
+        minusFrekBtn.setOnTouchListener((v, event) -> {
+            if (checkEvent(event)){
+                Steps(frek, "-", 10, 100, 1200);
+                return true;
+            }
+            return false;
+        });
+
+        //Vreme
+        plusTimeBtn.setOnTouchListener((v, event) -> {
+            if (checkEvent(event)){
+                Steps(time, "+", 1, 1, 255);
+                return true;
+            }
+            return false;
+        });
+
+        minusTimeBtn.setOnTouchListener((v, event) -> {
+            if (checkEvent(event)){
+                Steps(time, "-", 1, 1, 255);
+                return true;
+            }
+            return false;
+        });
 
         if (sendAllBoolean) {
-            stopBtn.setOnClickListener(v -> sendAll(begin + stop + end, true));
-            getBtn.setOnClickListener(v -> sendAll(begin + get + end, true));
+            stopBtn.setOnClickListener(v -> sendAll(begin + stop + end, true, false));
+            getBtn.setOnClickListener(v -> sendAll(begin + get + end, true, true));
         }
         else {
             stopBtn.setOnClickListener(v -> send(begin + stop + end));
@@ -200,7 +312,7 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
                 "I" + impuls.getText() + ";" +
                 "P" + pause.getText() + ";" +
                 "F" + frek.getText() + ";" +
-                "V" + voltage.getText() +
+                "V" + (Integer.parseInt(voltage.getText().toString()) * 7 + (Integer.parseInt(voltage.getText().toString()) / 10)) +
                 end));
 
         sendBtnAll.setOnClickListener(v -> sendAll(begin +
@@ -209,8 +321,8 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
                 "I" + impuls.getText() + ";" +
                 "P" + pause.getText() + ";" +
                 "F" + frek.getText() + ";" +
-                "V" + voltage.getText() +
-                end, true));
+                "V" + (Integer.parseInt(voltage.getText().toString()) * 7 + (Integer.parseInt(voltage.getText().toString()) / 10)) +
+                end, true, false));
 
         if (sendAllBoolean) {
             sendBtn.setBackgroundColor(Color.RED);
@@ -269,8 +381,8 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
 
             if (connected == Connected.True) {
                 send(messageToSend);
-
-                Thread.sleep(2000);
+                successDeviceNames.add(device);
+                sleep(2000);
 
                 disconnect();
                 getActivity().runOnUiThread(new Runnable() {
@@ -328,9 +440,15 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
     }
 
 
-    public void sendAll(String str, boolean all) {
+    public void sendAll(String str, boolean all, boolean isGet) {
+
+        this.isGet = isGet;
         ArrayList<BluetoothDevice> failedDevicesCopy = (ArrayList<BluetoothDevice>) failedDeviceNames.clone();
         failedDeviceNames.clear();
+
+        ArrayList<BluetoothDevice> successDevicesCopy = (ArrayList<BluetoothDevice>) successDeviceNames.clone();
+        successDeviceNames.clear();
+
         messageToSend = str;
         new Thread(new Runnable() {
             @Override
@@ -351,20 +469,30 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        Toast.makeText(getActivity(), "Završeno", Toast.LENGTH_SHORT).show();
                         AlertDialog.Builder builder1 = new AlertDialog.Builder(getContext());
 
-                        String message = "Uredjaji, koji nisu uspesno startovani su: \n";
-                        String positiveMessage = "Pokusaj Ponovo";
+                        String positiveMessage = "Pokušaj Ponovo";
                         String negativeMessage = "Odustani";
-                        for (int i = 0 ; i < failedDeviceNames.size() ;i++ )
-                        {
-                            message += failedDeviceNames.get(i).getName() + "\n";
+
+                        String message = "";
+                        if(successDeviceNames.size() > 0) {
+                            message += "Uređaji, koji su uspešno primili komandu su: \n";
+                            for (int i = 0; i < successDeviceNames.size(); i++) {
+                                message += successDeviceNames.get(i).getName() + "\n";
+                            }
                         }
-                        if (failedDeviceNames.size() == 0){
-                            message = "Uspesno su startovani svi uredjaji";
+
+                        if(failedDeviceNames.size() > 0) {
+                            message += "\n";
+                            message += "Uređaji, koji nisu uspešno primili komandu su: \n";
+                            for (int i = 0; i < failedDeviceNames.size(); i++) {
+                                message += failedDeviceNames.get(i).getName() + "\n";
+                            }
+                        }
+                        else {
                             positiveMessage = "U redu";
                         }
+
                         builder1.setMessage(message);
                         builder1.setCancelable(true);
 
@@ -373,7 +501,7 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
                                 new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int id) {
                                         if (failedDeviceNames.size() > 0) {
-                                            sendAll(str, false);
+                                            sendAll(str, false, isGet);
                                         }
                                         dialog.cancel();
                                     }
@@ -416,8 +544,8 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
             if (parts.length < 1) answerText = "Nepoznata greska.";
             parts[0] = parts[0].replace("E","");
             String error = "";
-            switch (parts[0]){
-                case "0": error = "Uspesno ste poslali komandu. \n"; break;
+            switch (parts[0]) {
+                case "0": error = "Uspesno ste poslali komandu. \n\n"; break;
                 case "1": error = "Poruka nije u dobrom formatu. \n"; break;
                 case "2": error = "Greska u zadatim parametrima. \n"; break;
                 case "3": error = "Komanda se ne moze izvrsiti. \n"; break;
@@ -433,16 +561,26 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
                 }
                 parts[2] = parts[2].replace("R", "");
 
-                String cycle;
-                if (parts.length < 4) {
-                    cycle = "";
+                if (!sendAllBoolean || (sendAllBoolean && isGet)) {
+                    String timeLeft = "Preostalo " + parts[2] + " min rada uredjaja. \n";
+                    String cycle;
+                    if (parts.length < 4) {
+                        cycle = "";
+                    } else {
+                        parts[3] = parts[3].replace("C", "");
+                        if (parts[3].equals("0")) {
+                            cycle = "Uredjaj nije izvrsio komandu do kraja.\n";
+                        } else {
+                            cycle = "Uredjaj je izvrsio komandu do kraja.\n";
+                            deviceState = "";
+                            timeLeft = "";
+                        }
+                    }
+                    answerText = error + deviceState + timeLeft + cycle;
                 }
                 else {
-                    parts[3] = parts[3].replace("C", "");
-                    cycle = "Odradjeno " + parts[3] + " ciklusa.\n";
+                    answerText = error + deviceState;
                 }
-                String timeLeft = "Preostalo " + parts[2] + " min rada uredjaja. \n";
-                answerText = error + deviceState + timeLeft + cycle;
             }
             else {
                 answerText = error;
@@ -506,22 +644,20 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
 
     public void Steps(TextView a, String s, int Step, int minValue, int maxValue) {
         String currentValue = (String) a.getText();
-        int time = Integer.parseInt(currentValue);
+        int value = Integer.parseInt(currentValue);
         if (s == "+") {
-            if (time < maxValue) {
-                time = time + Step;
-                currentValue = String.valueOf(time);
+            if (value < maxValue) {
+                value = value + Step;
+                currentValue = String.valueOf(value);
                 a.setText(currentValue);
             }
         } else if (s == "-") {
-            if (time > minValue) {
-                time = time - Step;
-                currentValue = String.valueOf(time);
+            if (value > minValue) {
+                value = value - Step;
+                currentValue = String.valueOf(value);
                 a.setText(currentValue);
             }
         }
-
-
     }
 
 }
