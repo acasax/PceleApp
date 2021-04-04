@@ -16,6 +16,9 @@ import android.os.IBinder;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LifecycleOwner;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.Observer;
 
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
@@ -29,11 +32,16 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.ResivoJe.PceleV3.database.MyRoomDatabase;
+import com.ResivoJe.PceleV3.database.Parameters;
+
 import java.util.ArrayList;
+import java.util.List;
 
 import static java.lang.Thread.*;
 
@@ -53,6 +61,7 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
     ArrayList<BluetoothDevice> failedDeviceNames = new ArrayList<>();
     ArrayList<BluetoothDevice> successDeviceNames = new ArrayList<>();
     private boolean isGet = false;
+    private int chosenState = 0;
 
     private String deviceToConnect;
     private String messageToSend;
@@ -72,6 +81,7 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
     String begin = "<";
     String end = ">";
 
+    ArrayList<Parameters> parameters = new ArrayList<>();
     /*
      * Lifecycle
      */
@@ -195,6 +205,47 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
         TextView impuls = view.findViewById(R.id.impulsTxt);
         TextView pause = view.findViewById(R.id.pauseTxt);
         TextView voltage = view.findViewById(R.id.voltageTxt);
+
+        View saveParameters = view.findViewById(R.id.save_parameters);
+        saveParameters.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder builder1 = new AlertDialog.Builder(getContext());
+
+                ArrayAdapter<String> adapter = new ArrayAdapter<String>(TerminalFragment.this.getContext(),
+                        android.R.layout.select_dialog_multichoice);
+                adapter.add("Stanje 1");
+                adapter.add("Stanje 2");
+                adapter.add("Stanje 3");
+
+                builder1.setTitle("Odaberi gde želiš da sačuvaš parametre:");
+                builder1.setSingleChoiceItems(adapter, 0, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        chosenState = which;
+                    }
+                });
+
+                builder1.setPositiveButton(
+                        "Sačuvaj",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                saveState();
+                                dialog.cancel();
+                            }
+                        });
+                builder1.setNegativeButton(
+                            "Odustani",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    dialog.cancel();
+                                }
+                            });
+                AlertDialog alert11 = builder1.create();
+                alert11.show();
+            }
+        });
+
 
         //plusTimeBtn.setOnClickListener(v -> Steps(time, "+", 1, 1, 255));
         //minusTimeBtn.setOnClickListener(v -> Steps(time, "-", 1, 1, 255));
@@ -331,12 +382,88 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
             sendBtnAll.setBackgroundColor(Color.RED);
             sendBtnAll.setEnabled(false);
         }
+
+        // promeniti brojeveeeee
+        //
+        MyRoomDatabase myRoomDatabase = MyRoomDatabase.getDatabase(getContext());
+        final LiveData<List<Parameters>> listLiveData = myRoomDatabase.parametersDAO().getAll();
+        listLiveData.observe(TerminalFragment.this, new Observer<List<Parameters>>(){
+            @Override
+            public void onChanged(List<Parameters> parameters) {
+                TerminalFragment.this.parameters.clear();
+                for (Parameters p : parameters) {
+                    TerminalFragment.this.parameters.add(p);
+                }
+            }
+        });
         return view;
+    }
+
+    private void saveState() {
+        chosenState += 2;
+        TextView time = getActivity().findViewById(R.id.timeTxt);
+        TextView frek = getActivity().findViewById(R.id.frekTxt);
+        TextView impuls = getActivity().findViewById(R.id.impulsTxt);
+        TextView pause = getActivity().findViewById(R.id.pauseTxt);
+        TextView voltage = getActivity().findViewById(R.id.voltageTxt);
+        int t = Integer.valueOf(time.getText().toString());
+        int f = Integer.valueOf(frek.getText().toString());
+        int i = Integer.valueOf(impuls.getText().toString());
+        int p = Integer.valueOf(pause.getText().toString());
+        int v = Integer.valueOf(voltage.getText().toString());
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                MyRoomDatabase.getDatabase(getContext()).parametersDAO().updateState(
+                        chosenState,t,f,i,p,v);
+            }
+        }).start();
+    }
+
+    void setNewParameters(int i){
+        TextView time = getActivity().findViewById(R.id.timeTxt);
+        TextView frek = getActivity().findViewById(R.id.frekTxt);
+        TextView impuls = getActivity().findViewById(R.id.impulsTxt);
+        TextView pause = getActivity().findViewById(R.id.pauseTxt);
+        TextView voltage = getActivity().findViewById(R.id.voltageTxt);
+
+        time.setText(String.valueOf(parameters.get(i).getTime()));
+        frek.setText(String.valueOf(parameters.get(i).getFrequency()));
+        impuls.setText(String.valueOf(parameters.get(i).getImpuls()));
+        pause.setText(String.valueOf(parameters.get(i).getPause()));
+        voltage.setText(String.valueOf(parameters.get(i).getVoltage()));
     }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_terminal, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == R.id.default_state) {
+            setNewParameters(0);
+            return true;
+        }
+
+        if (id == R.id.state_1) {
+            setNewParameters(1);
+            return true;
+        }
+
+        if (id == R.id.state_2) {
+            setNewParameters(2);
+            return true;
+        }
+
+        if (id == R.id.state_3) {
+            setNewParameters(3);
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     /*

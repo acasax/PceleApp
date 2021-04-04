@@ -3,6 +3,7 @@
     <string name="devices">Dostupni uređaji</string>
     <string name="po_ni">Start</string>
     <string name="prekini">Stop</string>
+    <string name="sacuvaj">Sačuvaj parametre</string>
     <string name="_1">1</string>
     <string name="vreme">VREME (min)</string>
     <string name="frekvencija">FREKVENCIJA (Hz)</string>

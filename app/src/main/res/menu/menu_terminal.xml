@@ -1,5 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/default_state"
+        android:title="Predefinisano stanje"
+        app:iconTint="@color/black"/>
+    <item
+        android:id="@+id/state_1"
+        android:title="Stanje 1"
+        app:iconTint="@color/black"/>
+    <item
+        android:id="@+id/state_2"
+        android:title="Stanje 2"
+        app:iconTint="@color/black"/>
+
+    <item
+        android:id="@+id/state_3"
+        android:title="Stanje 3"
+        app:iconTint="@color/black"/>
 
 </menu>
