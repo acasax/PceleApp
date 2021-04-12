@@ -684,7 +684,7 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
                 if (parts[1].equals("0")) {
                     deviceState = "Uredjaj ne radi. \n";
                 } else {
-                    deviceState = "Uredjaj radi. \n";
+                    deviceState = "";
                 }
                 parts[2] = parts[2].replace("R", "");
 
@@ -696,7 +696,7 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
                     } else {
                         parts[3] = parts[3].replace("C", "");
                         if (parts[3].equals("0")) {
-                            cycle = "Uredjaj nije izvrsio komandu do kraja.\n";
+                            cycle = "\n";
                         } else {
                             cycle = "Uredjaj je izvrsio komandu do kraja.\n";
                             deviceState = "";
