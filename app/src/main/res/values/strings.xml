@@ -15,4 +15,6 @@
     <string name="_0">0</string>
     <string name="start_all">POKRENI SVE</string>
     <string name="get">Čitaj stanje</string>
+    <string name="upali_blutut">UPALI BLUTUT</string>
+    <string name="izaberi_sve">iZABERI SVE</string>
 </resources>

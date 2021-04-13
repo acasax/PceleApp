@@ -4,10 +4,12 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -39,6 +41,7 @@ import android.widget.Toast;
 
 import com.ResivoJe.PceleV3.database.MyRoomDatabase;
 import com.ResivoJe.PceleV3.database.Parameters;
+import com.google.android.material.tabs.TabLayout;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,6 +49,7 @@ import java.util.List;
 import static java.lang.Thread.*;
 
 public class TerminalFragment extends Fragment implements ServiceConnection, SerialListener {
+    private static final String TAG = "MainActivity";
 
     private enum Connected {False, Pending, True}
 
@@ -57,6 +61,7 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
     Button sendBtnAll;
     Button stopBtn;
     Button getBtn;
+    Button startBtBtn;
     Object syncObject = new Object();
     ArrayList<BluetoothDevice> failedDeviceNames = new ArrayList<>();
     ArrayList<BluetoothDevice> successDeviceNames = new ArrayList<>();
@@ -82,6 +87,37 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
     String end = ">";
 
     ArrayList<Parameters> parameters = new ArrayList<>();
+
+    //Blutut kontrola promenljive
+    BluetoothAdapter mBluetoothAdapter;
+
+    // Create a BroadcastReceiver for ACTION_FOUND
+    private final BroadcastReceiver mBroadcastReceiver1 = new BroadcastReceiver() {
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            // When discovery finds a device
+            if (action.equals(mBluetoothAdapter.ACTION_STATE_CHANGED)) {
+                final int state = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, mBluetoothAdapter.ERROR);
+
+                switch(state){
+                    case BluetoothAdapter.STATE_OFF:
+                        Log.d(TAG, "onReceive: STATE OFF");
+                        break;
+                    case BluetoothAdapter.STATE_TURNING_OFF:
+                        Log.d(TAG, "mBroadcastReceiver1: STATE TURNING OFF");
+                        break;
+                    case BluetoothAdapter.STATE_ON:
+                        Log.d(TAG, "mBroadcastReceiver1: STATE ON");
+                        break;
+                    case BluetoothAdapter.STATE_TURNING_ON:
+                        Log.d(TAG, "mBroadcastReceiver1: STATE TURNING ON");
+                        break;
+                }
+            }
+        }
+    };
+
+
     /*
      * Lifecycle
      */
@@ -101,6 +137,7 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
             disconnect();
         getActivity().stopService(new Intent(getActivity(), SerialService.class));
         super.onDestroy();
+        service.unregisterReceiver(mBroadcastReceiver1);
     }
 
     @Override
@@ -186,10 +223,21 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
         receiveText.setTextColor(getResources().getColor(R.color.colorRecieveText)); // set as default color to reduce number of spans
         receiveText.setMovementMethod(ScrollingMovementMethod.getInstance());
 
+        //Blutut kontrola
+        mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+
+        startBtBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                enableDisableBT();
+            }
+        });
+
         sendBtn = view.findViewById(R.id.send_btn);
         sendBtnAll = view.findViewById(R.id.sendAll_btn);
         stopBtn = view.findViewById(R.id.stop_btn);
         getBtn = view.findViewById(R.id.get_btn);
+        startBtBtn = view.findViewById(R.id.start_bt);
         View plusTimeBtn = view.findViewById(R.id.plusTimeBtn);
         View minusTimeBtn = view.findViewById(R.id.minusTimeBtn);
         View plusFrekBtn = view.findViewById(R.id.plusFrekBtn);
@@ -247,6 +295,8 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
         });
 
 
+
+
         //plusTimeBtn.setOnClickListener(v -> Steps(time, "+", 1, 1, 255));
         //minusTimeBtn.setOnClickListener(v -> Steps(time, "-", 1, 1, 255));
 
@@ -301,7 +351,7 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
         //Impuls
         plusImpulsBtn.setOnTouchListener((v, event) -> {
             if (checkEvent(event)){
-                Steps(impuls, "+", 1, 1, 25);
+                Steps(impuls, "+", 1, 1, 10);
                 return true;
             }
             return false;
@@ -309,7 +359,7 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
 
         minusImpulsBtn.setOnTouchListener((v, event) -> {
             if (checkEvent(event)){
-                Steps(impuls, "-", 1, 1, 25);
+                Steps(impuls, "-", 1, 1, 10);
                 return true;
             }
             return false;
@@ -335,7 +385,7 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
         //Vreme
         plusTimeBtn.setOnTouchListener((v, event) -> {
             if (checkEvent(event)){
-                Steps(time, "+", 1, 1, 255);
+                Steps(time, "+", 1, 1, 240);
                 return true;
             }
             return false;
@@ -343,7 +393,7 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
 
         minusTimeBtn.setOnTouchListener((v, event) -> {
             if (checkEvent(event)){
-                Steps(time, "-", 1, 1, 255);
+                Steps(time, "-", 1, 1, 240);
                 return true;
             }
             return false;
@@ -397,6 +447,25 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
             }
         });
         return view;
+    }
+
+    //Funkcija koja pali i gasi bt
+    public void enableDisableBT(){
+        if (mBluetoothAdapter == null) {
+            Log.d(TAG, "enableDisableBT: Na uređaju BT ne postoji.");
+        }
+        if (!mBluetoothAdapter.isEnabled()){
+            Intent enableBTIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+            startActivity(enableBTIntent);
+
+            IntentFilter BTIntent = new IntentFilter(BluetoothAdapter.ACTION_CONNECTION_STATE_CHANGED);
+            service.registerReceiver(mBroadcastReceiver1, BTIntent);
+        }
+        if (mBluetoothAdapter.isEnabled()) {
+            mBluetoothAdapter.disable();
+            Intent enableBTIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+            startActivity(enableBTIntent);
+        }
     }
 
     private void saveState() {
