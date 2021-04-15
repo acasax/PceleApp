@@ -9,6 +9,12 @@
         android:title="Osvezi"
         app:showAsAction="always" />
 
+    <item
+        android:id="@+id/drkajBlutut"
+        android:icon="@drawable/minus"
+        android:title="Blutut podesavanja"
+        app:showAsAction="always" />
+
 
 </menu>
 

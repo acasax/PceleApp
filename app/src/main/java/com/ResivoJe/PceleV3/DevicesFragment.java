@@ -89,13 +89,13 @@ public class DevicesFragment extends ListFragment {
         if (ValidDevice.size() > 0){
             Button button = header.findViewById(R.id.chooseAll_btn2);
             button.setOnClickListener(v -> chooseAllBtn());
-            Button button1 = header.findViewById(R.id.start_bt_property);
-            button1.setOnClickListener(v -> openNewActivity());
+            //Button button1 = header.findViewById(R.id.start_bt_property);
+            //button1.setOnClickListener(v -> openNewActivity());
         }
     }
 
     public void openNewActivity(){
-        Intent intent = new Intent(getActivity(), btsetings.class);
+        Intent intent = new Intent(getActivity(), BTSettings.class);
         startActivity(intent);
     }
 
@@ -120,6 +120,9 @@ public class DevicesFragment extends ListFragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         switch (id) {
+            case R.id.drkajBlutut:
+                openNewActivity();
+                return true;
             case R.id.clear:
                 refresh();
                 return true;

@@ -7,15 +7,6 @@
     android:orientation="vertical">
 
 
-    <Button
-        android:id="@+id/start_bt_property"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20px"
-        android:background="@color/colorPrimary"
-        android:text="@string/pode_avanja_blututa"
-        android:textColor="@color/black" />
-
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
