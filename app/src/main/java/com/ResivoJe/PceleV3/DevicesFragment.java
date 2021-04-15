@@ -71,7 +71,6 @@ public class DevicesFragment extends ListFragment {
                 }
             };
         }
-        btnDiscover();
     }
 
     boolean isValid(CharSequence s) {
@@ -90,14 +89,19 @@ public class DevicesFragment extends ListFragment {
         if (ValidDevice.size() > 0){
             Button button = header.findViewById(R.id.chooseAll_btn2);
             button.setOnClickListener(v -> chooseAllBtn());
+            Button button1 = header.findViewById(R.id.start_bt_property);
+            button1.setOnClickListener(v -> openNewActivity());
         }
+    }
+
+    public void openNewActivity(){
+        Intent intent = new Intent(getActivity(), btsetings.class);
+        startActivity(intent);
     }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_devices, menu);
-        if(bluetoothAdapter == null)
-            menu.findItem(R.id.bt_settings).setEnabled(false);
     }
 
     @Override
@@ -116,11 +120,6 @@ public class DevicesFragment extends ListFragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         switch (id) {
-            case R.id.bt_settings:
-                Intent intent = new Intent();
-                intent.setAction(android.provider.Settings.ACTION_BLUETOOTH_SETTINGS);
-                startActivity(intent);
-                return true;
             case R.id.clear:
                 refresh();
                 return true;
@@ -199,46 +198,5 @@ public class DevicesFragment extends ListFragment {
         if(bValid) return +1;
         return a.getAddress().compareTo(b.getAddress());
     }
-
-
-    /**
-     * Broadcast Receiver for listing devices that are not yet paired
-     * -Executed by btnDiscover() method.
-     */
-    private BroadcastReceiver mBroadcastReceiver3 = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            final String action = intent.getAction();
-            Log.d(TAG, "onReceive: ACTION FOUND.");
-
-            if (action.equals(BluetoothDevice.ACTION_FOUND)){
-                BluetoothDevice device = intent.getParcelableExtra (BluetoothDevice.EXTRA_DEVICE);
-//                mBTDevices.add(device);
-                Log.d(TAG, "onReceive: " + device.getName() + ": " + device.getAddress());
-//                mDeviceListAdapter = new DeviceListAdapter(context, R.layout.device_adapter_view, mBTDevices);
-//                lvNewDevices.setAdapter(mDeviceListAdapter);
-            }
-        }
-    };
-
-    public void btnDiscover() {
-        Log.d(TAG, "btnDiscover: Looking for unpaired devices.");
-
-        if(bluetoothAdapter.isDiscovering()){
-            bluetoothAdapter.cancelDiscovery();
-            Log.d(TAG, "btnDiscover: Canceling discovery.");
-
-            bluetoothAdapter.startDiscovery();
-            IntentFilter discoverDevicesIntent = new IntentFilter(BluetoothDevice.ACTION_FOUND);
-            getActivity().registerReceiver(mBroadcastReceiver3, discoverDevicesIntent);
-        }
-        if(!bluetoothAdapter.isDiscovering()){
-
-            bluetoothAdapter.startDiscovery();
-            IntentFilter discoverDevicesIntent = new IntentFilter(BluetoothDevice.ACTION_FOUND);
-            getActivity().registerReceiver(mBroadcastReceiver3, discoverDevicesIntent);
-        }
-    }
-
 
 }

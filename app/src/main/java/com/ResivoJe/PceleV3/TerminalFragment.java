@@ -88,35 +88,6 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
 
     ArrayList<Parameters> parameters = new ArrayList<>();
 
-    //Blutut kontrola promenljive
-    BluetoothAdapter mBluetoothAdapter;
-
-    // Create a BroadcastReceiver for ACTION_FOUND
-    private final BroadcastReceiver mBroadcastReceiver1 = new BroadcastReceiver() {
-        public void onReceive(Context context, Intent intent) {
-            String action = intent.getAction();
-            // When discovery finds a device
-            if (action.equals(mBluetoothAdapter.ACTION_STATE_CHANGED)) {
-                final int state = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, mBluetoothAdapter.ERROR);
-
-                switch(state){
-                    case BluetoothAdapter.STATE_OFF:
-                        Log.d(TAG, "onReceive: STATE OFF");
-                        break;
-                    case BluetoothAdapter.STATE_TURNING_OFF:
-                        Log.d(TAG, "mBroadcastReceiver1: STATE TURNING OFF");
-                        break;
-                    case BluetoothAdapter.STATE_ON:
-                        Log.d(TAG, "mBroadcastReceiver1: STATE ON");
-                        break;
-                    case BluetoothAdapter.STATE_TURNING_ON:
-                        Log.d(TAG, "mBroadcastReceiver1: STATE TURNING ON");
-                        break;
-                }
-            }
-        }
-    };
-
 
     /*
      * Lifecycle
@@ -137,7 +108,7 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
             disconnect();
         getActivity().stopService(new Intent(getActivity(), SerialService.class));
         super.onDestroy();
-        service.unregisterReceiver(mBroadcastReceiver1);
+
     }
 
     @Override
@@ -223,21 +194,11 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
         receiveText.setTextColor(getResources().getColor(R.color.colorRecieveText)); // set as default color to reduce number of spans
         receiveText.setMovementMethod(ScrollingMovementMethod.getInstance());
 
-        //Blutut kontrola
-        mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-
-        startBtBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                enableDisableBT();
-            }
-        });
 
         sendBtn = view.findViewById(R.id.send_btn);
         sendBtnAll = view.findViewById(R.id.sendAll_btn);
         stopBtn = view.findViewById(R.id.stop_btn);
         getBtn = view.findViewById(R.id.get_btn);
-        startBtBtn = view.findViewById(R.id.start_bt);
         View plusTimeBtn = view.findViewById(R.id.plusTimeBtn);
         View minusTimeBtn = view.findViewById(R.id.minusTimeBtn);
         View plusFrekBtn = view.findViewById(R.id.plusFrekBtn);
@@ -449,24 +410,6 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
         return view;
     }
 
-    //Funkcija koja pali i gasi bt
-    public void enableDisableBT(){
-        if (mBluetoothAdapter == null) {
-            Log.d(TAG, "enableDisableBT: Na uređaju BT ne postoji.");
-        }
-        if (!mBluetoothAdapter.isEnabled()){
-            Intent enableBTIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-            startActivity(enableBTIntent);
-
-            IntentFilter BTIntent = new IntentFilter(BluetoothAdapter.ACTION_CONNECTION_STATE_CHANGED);
-            service.registerReceiver(mBroadcastReceiver1, BTIntent);
-        }
-        if (mBluetoothAdapter.isEnabled()) {
-            mBluetoothAdapter.disable();
-            Intent enableBTIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-            startActivity(enableBTIntent);
-        }
-    }
 
     private void saveState() {
         chosenState += 2;

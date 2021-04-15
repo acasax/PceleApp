@@ -18,14 +18,7 @@
             android:background="?attr/colorPrimary"
             />
 
-        <Button
-            android:id="@+id/start_bt"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20px"
-            android:background="@color/colorPrimary"
-            android:text="@string/upali_blutut"
-            android:textColor="@color/black" />
+
 
     </com.google.android.material.appbar.AppBarLayout>
 
