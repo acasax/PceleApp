@@ -64,6 +64,11 @@ public class BTSettings extends AppCompatActivity {
         });
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(mBroadcastReceiver1);
+    }
 
     //Funkcija koja pali i gasi bt
     public void enableDisableBT(){
