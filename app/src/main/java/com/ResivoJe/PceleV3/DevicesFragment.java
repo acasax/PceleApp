@@ -95,7 +95,7 @@ public class DevicesFragment extends ListFragment {
     }
 
     public void openNewActivity(){
-        Intent intent = new Intent(getActivity(), BTSettings.class);
+        Intent intent = new Intent(getActivity(), btsetings.class);
         startActivity(intent);
     }
 
