@@ -9,6 +9,7 @@ import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -18,6 +19,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.Manifest;
+
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Set;
 
@@ -114,14 +117,19 @@ public class btsetings extends AppCompatActivity implements AdapterView.OnItemCl
             final String action = intent.getAction();
             Log.d(TAG, "onReceive: ACTION FOUND.");
 
-            if (action.equals(BluetoothDevice.ACTION_FOUND)){
-  //              mBTDevices.clear();
+            if (action.equals(BluetoothDevice.ACTION_FOUND)) {
+                //              mBTDevices.clear();
 //                mDeviceListAdapter.clear();
-                BluetoothDevice device = intent.getParcelableExtra (BluetoothDevice.EXTRA_DEVICE);
-                mBTDevices.add(device);
-                Log.d(TAG, "onReceive: " + device.getName() );
-                mDeviceListAdapter = new DeviceListAdapter(context, R.layout.device_adapter_view, mBTDevices);
-                lvNewDevices.setAdapter(mDeviceListAdapter);
+                    BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+                    device.setPin("1234".getBytes());
+                    //BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+                    mBTDevices.add(device);
+                    Log.d(TAG, "onReceive: " + device.getName());
+                    mDeviceListAdapter = new DeviceListAdapter(context, R.layout.device_adapter_view, mBTDevices);
+                    lvNewDevices.setAdapter(mDeviceListAdapter);
+
+
+
             }
         }
     };
@@ -144,6 +152,7 @@ public class btsetings extends AppCompatActivity implements AdapterView.OnItemCl
                 }
                 //case2: creating a bone
                 if (mDevice.getBondState() == BluetoothDevice.BOND_BONDING) {
+                    mDevice.setPin("1234".getBytes());
                     Log.d(TAG, "BroadcastReceiver: BOND_BONDING.");
                 }
                 //case3: breaking a bond
@@ -154,19 +163,19 @@ public class btsetings extends AppCompatActivity implements AdapterView.OnItemCl
         }
     };
 
-
-
-    @Override
-    protected void onDestroy() {
-        Log.d(TAG, "onDestroy: called.");
-        super.onDestroy();
-        if (mBroadcastReceiver1 != null)
-            unregisterReceiver(mBroadcastReceiver1);
-        unregisterReceiver(mBroadcastReceiver2);
-        unregisterReceiver(mBroadcastReceiver3);
-        unregisterReceiver(mBroadcastReceiver4);
-        //mBluetoothAdapter.cancelDiscovery();
-    }
+//
+//
+//    @Override
+//    protected void onDestroy() {
+//        Log.d(TAG, "onDestroy: called.");
+//        super.onDestroy();
+//        if (mBroadcastReceiver1 != null)
+//            unregisterReceiver(mBroadcastReceiver1);
+//        unregisterReceiver(mBroadcastReceiver2);
+//        unregisterReceiver(mBroadcastReceiver3);
+//        unregisterReceiver(mBroadcastReceiver4);
+//        //mBluetoothAdapter.cancelDiscovery();
+//    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -181,10 +190,11 @@ public class btsetings extends AppCompatActivity implements AdapterView.OnItemCl
         IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_BOND_STATE_CHANGED);
         registerReceiver(mBroadcastReceiver4, filter);
 
+
+
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
         lvNewDevices.setOnItemClickListener(btsetings.this);
-
 
         btnONOFF.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -195,8 +205,6 @@ public class btsetings extends AppCompatActivity implements AdapterView.OnItemCl
         });
 
     }
-
-
 
     public void enableDisableBT(){
         if(mBluetoothAdapter == null){
@@ -298,14 +306,52 @@ public class btsetings extends AppCompatActivity implements AdapterView.OnItemCl
         if(Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN_MR2){
             Log.d(TAG, "Trying to pair with " + deviceName);
 
-            String pin = "1234";
-            if (mBTDevices.get(i).setPin(pin.getBytes())){
-                Log.d("TAG","Popusis mi pinovani kurac");
-                mBTDevices.get(i).createBond();
-            }
+              String pin = "1234";
+
+              Log.d("TAG","Popusis mi pinovani kurac");
+              mBTDevices.get(i).setPin("1234".getBytes());
+              mBTDevices.get(i).createBond();
+           /*String ACTION_PAIRING_REQUEST = "android.bluetooth.device.action.PAIRING_REQUEST";
+            IntentFilter intent = new IntentFilter(ACTION_PAIRING_REQUEST);
+            String EXTRA_DEVICE = "android.bluetooth.device.extra.DEVICE";
+
+            intent.putExtra(EXTRA_DEVICE, mBTDevices.get(i));
+            String EXTRA_PAIRING_VARIANT = "android.bluetooth.device.extra.PAIRING_VARIANT";
+            int PAIRING_VARIANT_PIN = 1234;
+            intent.putExtra(EXTRA_PAIRING_VARIANT, PAIRING_VARIANT_PIN);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            registerReceiver(rendomKurceviRisiver, intent);*/
+            //getApplicationContext().startActivity(intent);
+
+
+
         }
     }
 
+    BroadcastReceiver rendomKurceviRisiver = new BluetoothConnectActivityReceiver();
+
+    public class BluetoothConnectActivityReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent.getAction().equals("android.bluetooth.device.action.PAIRING_REQUEST")) {
+                BluetoothDevice mBluetoothDevice = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+                try {
+                                 // (Samsung) version 4.3 test phone will still pop up the user interaction page (flash), if you do not comment out the following page will not cancel but can be paired successfully. (Zhongxing, Meizu 4) (Flyme 6) version 5.1 mobile phone in both cases are normal
+                    //ClsUtils.setPairingConfirmation(mBluetoothDevice.getClass(), mBluetoothDevice, true);
+                    abortBroadcast();//If the broadcast is not terminated, a matching box will appear.
+                    //3. Call the setPin method to pair...
+                    Method removeBondMethod = BluetoothDevice.class.getDeclaredMethod("setPin", new Class[]{byte[].class});
+                    Boolean returnValue = (Boolean) removeBondMethod.invoke(mBluetoothDevice,
+                            new Object[]
+                                    {"1234".getBytes()});
+                    Log.e("returnValue", "" + returnValue);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
 
 
 }
