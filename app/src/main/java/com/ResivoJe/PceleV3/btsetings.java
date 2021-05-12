@@ -1,5 +1,6 @@
 package com.ResivoJe.PceleV3;
 
+import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
@@ -34,11 +35,11 @@ public class btsetings extends AppCompatActivity implements AdapterView.OnItemCl
     Button btnEnableDisable_Discoverable;
 
     public ArrayList<BluetoothDevice> mBTDevices = new ArrayList<>();
-
+    Thread pairingThread = null;
     public DeviceListAdapter mDeviceListAdapter;
 
     ListView lvNewDevices;
-
+    ProgressDialog dialog = null;
 
     // Create a BroadcastReceiver for ACTION_FOUND
     private final BroadcastReceiver mBroadcastReceiver1 = new BroadcastReceiver() {
@@ -122,13 +123,12 @@ public class btsetings extends AppCompatActivity implements AdapterView.OnItemCl
 //                mDeviceListAdapter.clear();
                     BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
                     device.setPin("1234".getBytes());
-                    //BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
                     mBTDevices.add(device);
                     Log.d(TAG, "onReceive: " + device.getName());
                     mDeviceListAdapter = new DeviceListAdapter(context, R.layout.device_adapter_view, mBTDevices);
                     lvNewDevices.setAdapter(mDeviceListAdapter);
-
-
+                    if (dialog.isShowing())
+                        dialog.dismiss();
 
             }
         }
@@ -148,6 +148,12 @@ public class btsetings extends AppCompatActivity implements AdapterView.OnItemCl
                 //case1: bonded already
                 if (mDevice.getBondState() == BluetoothDevice.BOND_BONDED){
                     Log.d(TAG, "BroadcastReceiver: BOND_BONDED.");
+                    synchronized (pairingThread) {
+                        if (pairingThread != null) {
+                            pairingThread.notifyAll();
+                            Log.d(TAG, "NOTIFY");
+                        }
+                    }
                     //getResources().getString(R.string.upali_blutut);
                 }
                 //case2: creating a bone
@@ -163,19 +169,38 @@ public class btsetings extends AppCompatActivity implements AdapterView.OnItemCl
         }
     };
 
-//
-//
-//    @Override
-//    protected void onDestroy() {
-//        Log.d(TAG, "onDestroy: called.");
-//        super.onDestroy();
-//        if (mBroadcastReceiver1 != null)
-//            unregisterReceiver(mBroadcastReceiver1);
-//        unregisterReceiver(mBroadcastReceiver2);
-//        unregisterReceiver(mBroadcastReceiver3);
-//        unregisterReceiver(mBroadcastReceiver4);
-//        //mBluetoothAdapter.cancelDiscovery();
-//    }
+
+
+    @Override
+    protected void onDestroy() {
+        Log.d(TAG, "onDestroy: called.");
+        super.onDestroy();
+        if (mBroadcastReceiver1 != null)
+            try {
+                unregisterReceiver(mBroadcastReceiver1);
+            }catch (IllegalArgumentException e){
+                e.printStackTrace();
+            }
+        if (mBroadcastReceiver2 != null)
+            try {
+                unregisterReceiver(mBroadcastReceiver2);
+            }catch (IllegalArgumentException e){
+                e.printStackTrace();
+            }
+        if (mBroadcastReceiver3 != null)
+            try {
+                unregisterReceiver(mBroadcastReceiver3);
+            }catch (IllegalArgumentException e){
+                e.printStackTrace();
+            }
+        if (mBroadcastReceiver4 != null)
+            try {
+                unregisterReceiver(mBroadcastReceiver4);
+            }catch (IllegalArgumentException e){
+                e.printStackTrace();
+            }
+        mBluetoothAdapter.cancelDiscovery();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -189,8 +214,6 @@ public class btsetings extends AppCompatActivity implements AdapterView.OnItemCl
         //Broadcasts when bond state changes (ie:pairing)
         IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_BOND_STATE_CHANGED);
         registerReceiver(mBroadcastReceiver4, filter);
-
-
 
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
@@ -228,17 +251,73 @@ public class btsetings extends AppCompatActivity implements AdapterView.OnItemCl
 
     }
 
-
+    // od sad je ovo pair all al aj da ne menjamo ime sad
+    //
     public void btnEnableDisable_Discoverable(View view) {
-        Log.d(TAG, "btnEnableDisable_Discoverable: Making device discoverable for 300 seconds.");
+//        Log.d(TAG, "btnEnableDisable_Discoverable: Making device discoverable for 300 seconds.");
+//
+//        Intent discoverableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
+//        discoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 300);
+//        startActivity(discoverableIntent);
+//
+//        IntentFilter intentFilter = new IntentFilter(mBluetoothAdapter.ACTION_SCAN_MODE_CHANGED);
+//        registerReceiver(mBroadcastReceiver2,intentFilter);
 
-        Intent discoverableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
-        discoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 300);
-        startActivity(discoverableIntent);
 
-        IntentFilter intentFilter = new IntentFilter(mBluetoothAdapter.ACTION_SCAN_MODE_CHANGED);
-        registerReceiver(mBroadcastReceiver2,intentFilter);
+        ProgressDialog progress = new ProgressDialog(this);
+        progress.setMessage("Pairing devices");
+        progress.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+        progress.setProgress(0);
+        progress.setMax(mBTDevices.size());
+        progress.show();
 
+        pairingThread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                synchronized (this) {
+                    if (mBTDevices != null) {
+                        for (int i = 0; i < mBTDevices.size(); i++) {
+                            Log.d("BT", "Popusis mi pinovani kurac");
+                            mBTDevices.get(i).setPin("1234".getBytes());
+                            mBTDevices.get(i).createBond();
+                            mBTDevices.get(i).setPin("1234".getBytes());
+
+                            try {
+                                wait(15000);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                            mBTDevices.get(i).setPin("1234".getBytes());
+
+                            final int jebenoI = i + 1;
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Log.d("BT", "Index " + jebenoI);
+
+                                    progress.setProgress(jebenoI);
+                                }
+                            });
+                            Log.d("BT", "Index " + i + " Number of devices" + mBTDevices.size());
+                        }
+                        try {
+                            Thread.sleep(2000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                progress.dismiss();
+                            }
+                        });
+                    }
+                }
+
+                pairingThread = null;
+            }
+        });
+        pairingThread.start();
     }
 
     public void btnDiscover(View view) {
@@ -255,6 +334,22 @@ public class btsetings extends AppCompatActivity implements AdapterView.OnItemCl
             mBluetoothAdapter.startDiscovery();
             IntentFilter discoverDevicesIntent = new IntentFilter(BluetoothDevice.ACTION_FOUND);
             registerReceiver(mBroadcastReceiver3, discoverDevicesIntent);
+            dialog = ProgressDialog.show(btsetings.this, "",
+                    "Loading. Please wait...", true);
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+
+                    try {
+                        Thread.sleep(15000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    if (dialog != null && dialog.isShowing()){
+                        dialog.dismiss();
+                    }
+                }
+            }).start();
         }
         if(!mBluetoothAdapter.isDiscovering()){
 
@@ -265,6 +360,8 @@ public class btsetings extends AppCompatActivity implements AdapterView.OnItemCl
             mBluetoothAdapter.startDiscovery();
             IntentFilter discoverDevicesIntent = new IntentFilter(BluetoothDevice.ACTION_FOUND);
             registerReceiver(mBroadcastReceiver3, discoverDevicesIntent);
+            dialog = ProgressDialog.show(btsetings.this, "",
+                    "Loading. Please wait...", true);
         }
     }
 
@@ -311,45 +408,6 @@ public class btsetings extends AppCompatActivity implements AdapterView.OnItemCl
               Log.d("TAG","Popusis mi pinovani kurac");
               mBTDevices.get(i).setPin("1234".getBytes());
               mBTDevices.get(i).createBond();
-           /*String ACTION_PAIRING_REQUEST = "android.bluetooth.device.action.PAIRING_REQUEST";
-            IntentFilter intent = new IntentFilter(ACTION_PAIRING_REQUEST);
-            String EXTRA_DEVICE = "android.bluetooth.device.extra.DEVICE";
-
-            intent.putExtra(EXTRA_DEVICE, mBTDevices.get(i));
-            String EXTRA_PAIRING_VARIANT = "android.bluetooth.device.extra.PAIRING_VARIANT";
-            int PAIRING_VARIANT_PIN = 1234;
-            intent.putExtra(EXTRA_PAIRING_VARIANT, PAIRING_VARIANT_PIN);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            registerReceiver(rendomKurceviRisiver, intent);*/
-            //getApplicationContext().startActivity(intent);
-
-
-
-        }
-    }
-
-    BroadcastReceiver rendomKurceviRisiver = new BluetoothConnectActivityReceiver();
-
-    public class BluetoothConnectActivityReceiver extends BroadcastReceiver {
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            if (intent.getAction().equals("android.bluetooth.device.action.PAIRING_REQUEST")) {
-                BluetoothDevice mBluetoothDevice = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-                try {
-                                 // (Samsung) version 4.3 test phone will still pop up the user interaction page (flash), if you do not comment out the following page will not cancel but can be paired successfully. (Zhongxing, Meizu 4) (Flyme 6) version 5.1 mobile phone in both cases are normal
-                    //ClsUtils.setPairingConfirmation(mBluetoothDevice.getClass(), mBluetoothDevice, true);
-                    abortBroadcast();//If the broadcast is not terminated, a matching box will appear.
-                    //3. Call the setPin method to pair...
-                    Method removeBondMethod = BluetoothDevice.class.getDeclaredMethod("setPin", new Class[]{byte[].class});
-                    Boolean returnValue = (Boolean) removeBondMethod.invoke(mBluetoothDevice,
-                            new Object[]
-                                    {"1234".getBytes()});
-                    Log.e("returnValue", "" + returnValue);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
         }
     }
 
