@@ -17,31 +17,38 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-
+    <LinearLayout
+        android:layout_weight="1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
     <Button
         android:text="ON/OFF"
+        android:layout_weight="1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_alignParentRight="true"
         android:id="@+id/btnONOFF"/>
 
-    <Button
-        android:id="@+id/btnDiscoverable_on_off"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:onClick="btnEnableDisable_Discoverable"
-        android:text="Enable Discoverable" />
+        <Button
+            android:id="@+id/btnDiscoverable_on_off"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_weight="1"
+            android:onClick="btnEnableDisable_Discoverable"
+            android:text="Enable Discoverable" />
 
-    <Button
+        <Button
+        android:layout_weight="1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/btnFindUnpairedDevices"
         android:text="Discover"
         android:onClick="btnDiscover"/>
-
+    </LinearLayout>
     <ListView
         android:id="@+id/lvNewDevices"
         android:layout_width="match_parent"
