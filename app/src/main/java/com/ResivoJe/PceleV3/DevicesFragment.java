@@ -21,6 +21,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -71,6 +72,7 @@ public class DevicesFragment extends ListFragment {
                 }
             };
         }
+
     }
 
     boolean isValid(CharSequence s) {
@@ -107,14 +109,24 @@ public class DevicesFragment extends ListFragment {
     @Override
     public void onResume() {
         super.onResume();
-        if(bluetoothAdapter == null)
-            setEmptyText("Blutut nije dostupan na ovom uređaju");
-        else if(!bluetoothAdapter.isEnabled())
-            setEmptyText("Blutut je ugašen");
-        else
-            setEmptyText("Nema pronađenih uređaja");
+
         refresh();
     }
+
+    //Funkcija za jezik zamenu
+   /* private boolean setNewLocale(String language, boolean restartProcess) {
+        App.localeManager.setNewLocale(this, language);
+
+        Intent i = new Intent(this, MainActivity.class);
+        startActivity(i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK));
+
+        if (restartProcess) {
+            System.exit(0);
+        } else {
+            Toast.makeText(this, "Activity restarted", Toast.LENGTH_SHORT).show();
+        }
+        return true;
+    }*/
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -125,6 +137,10 @@ public class DevicesFragment extends ListFragment {
                 return true;
             case R.id.clear:
                 refresh();
+                return true;
+            case R.id.en_lang:
+                return true;
+            case R.id.sr_lang:
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -148,6 +164,43 @@ public class DevicesFragment extends ListFragment {
      //dodaj dugme za refres
     void refresh() {
         AllDevice.clear();
+        if(bluetoothAdapter == null)
+            setEmptyText("Blutut nije dostupan na ovom uređaju");
+        else if(!bluetoothAdapter.isEnabled())
+            setEmptyText("Blutut je ugašen");
+        else
+            setEmptyText("Nema pronađenih uređaja");
+        if (getActivity().getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH)) {
+            bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+            bluetoothAdapter.startDiscovery();
+            Set<BluetoothDevice> pairedDevices = bluetoothAdapter.getBondedDevices();
+            if (pairedDevices.size() > 0) {
+                // There are paired devices. Get the name and address of each paired device.
+                for (BluetoothDevice device : pairedDevices) {
+                    String deviceName = device.getName();
+                    if (isValid(deviceName)) {
+                        ValidDevice.add(device);
+                    }
+                }
+            }
+            listAdapter = new ArrayAdapter<BluetoothDevice>(getActivity(), 0, ValidDevice) {
+                @Override
+                public View getView(int p, View view, ViewGroup parent) {
+
+                    if (view == null) {
+                        view = getActivity().getLayoutInflater().inflate(R.layout.device_list_item, parent, false);
+                    }
+                    BluetoothDevice device = ValidDevice.get(p);
+                    TextView text1 = view.findViewById(R.id.text1);
+                    TextView text2 = view.findViewById(R.id.text2);
+                    text1.setText(device.getName());
+                    text2.setText(device.getAddress());
+
+                    return view;
+                }
+            };
+        }
+
         if(bluetoothAdapter != null) {
             for (BluetoothDevice device : bluetoothAdapter.getBondedDevices())
                 if (device.getType() != BluetoothDevice.DEVICE_TYPE_LE)

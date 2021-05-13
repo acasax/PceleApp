@@ -15,6 +15,14 @@
         android:title="Blutut podesavanja"
         app:showAsAction="always" />
 
+    <item
+        android:id="@+id/en_lang"
+        android:title="@string/engelski"
+        app:iconTint="@color/black"/>
+    <item
+        android:id="@+id/sr_lang"
+        android:title="@string/srpski"
+        app:iconTint="@color/black"/>
 
 </menu>
 
