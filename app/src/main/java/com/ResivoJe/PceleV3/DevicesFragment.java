@@ -71,6 +71,8 @@ public class DevicesFragment extends ListFragment {
                     return view;
                 }
             };
+            setListAdapter(listAdapter);
+
         }
 
     }
@@ -168,39 +170,44 @@ public class DevicesFragment extends ListFragment {
             setEmptyText("Blutut nije dostupan na ovom uređaju");
         else if(!bluetoothAdapter.isEnabled())
             setEmptyText("Blutut je ugašen");
-        else
-            setEmptyText("Nema pronađenih uređaja");
-        if (getActivity().getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH)) {
-            bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-            bluetoothAdapter.startDiscovery();
-            Set<BluetoothDevice> pairedDevices = bluetoothAdapter.getBondedDevices();
-            if (pairedDevices.size() > 0) {
-                // There are paired devices. Get the name and address of each paired device.
-                for (BluetoothDevice device : pairedDevices) {
-                    String deviceName = device.getName();
-                    if (isValid(deviceName)) {
-                        ValidDevice.add(device);
+        else {
+            if (getActivity().getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH)) {
+                ValidDevice.clear();
+                bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+                bluetoothAdapter.startDiscovery();
+                Set<BluetoothDevice> pairedDevices = bluetoothAdapter.getBondedDevices();
+                if (pairedDevices.size() > 0) {
+                    // There are paired devices. Get the name and address of each paired device.
+                    for (BluetoothDevice device : pairedDevices) {
+                        String deviceName = device.getName();
+                        if (isValid(deviceName)) {
+                            ValidDevice.add(device);
+                        }
                     }
                 }
+                listAdapter = new ArrayAdapter<BluetoothDevice>(getActivity(), 0, ValidDevice) {
+                    @Override
+                    public View getView(int p, View view, ViewGroup parent) {
+
+                        if (view == null) {
+                            view = getActivity().getLayoutInflater().inflate(R.layout.device_list_item, parent, false);
+                        }
+                        BluetoothDevice device = ValidDevice.get(p);
+                        TextView text1 = view.findViewById(R.id.text1);
+                        TextView text2 = view.findViewById(R.id.text2);
+                        text1.setText(device.getName());
+                        text2.setText(device.getAddress());
+
+                        return view;
+                    }
+                };
+                setListAdapter(listAdapter);
+
             }
-            listAdapter = new ArrayAdapter<BluetoothDevice>(getActivity(), 0, ValidDevice) {
-                @Override
-                public View getView(int p, View view, ViewGroup parent) {
-
-                    if (view == null) {
-                        view = getActivity().getLayoutInflater().inflate(R.layout.device_list_item, parent, false);
-                    }
-                    BluetoothDevice device = ValidDevice.get(p);
-                    TextView text1 = view.findViewById(R.id.text1);
-                    TextView text2 = view.findViewById(R.id.text2);
-                    text1.setText(device.getName());
-                    text2.setText(device.getAddress());
-
-                    return view;
-                }
-            };
+            if (ValidDevice.size() == 0){
+                setEmptyText("Nema pronađenih uređaja");
+            }
         }
-
         if(bluetoothAdapter != null) {
             for (BluetoothDevice device : bluetoothAdapter.getBondedDevices())
                 if (device.getType() != BluetoothDevice.DEVICE_TYPE_LE)

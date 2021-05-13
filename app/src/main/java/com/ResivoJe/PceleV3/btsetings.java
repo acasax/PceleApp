@@ -25,6 +25,7 @@ import android.Manifest;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
@@ -42,7 +43,12 @@ public class btsetings extends AppCompatActivity implements AdapterView.OnItemCl
 
     ListView lvNewDevices;
     ProgressDialog dialog = null;
+    Pattern sPattern = Pattern.compile("^BSRAM(\\d{5,7})$");
+    Pattern mPattern = Pattern.compile("^BSram(\\d{5,7})$");
 
+    boolean isValid(CharSequence s) {
+        return sPattern.matcher(s).matches() || mPattern.matcher(s).matches();
+    }
     // Create a BroadcastReceiver for ACTION_FOUND
     private final BroadcastReceiver mBroadcastReceiver1 = new BroadcastReceiver() {
         public void onReceive(Context context, Intent intent) {
@@ -124,14 +130,15 @@ public class btsetings extends AppCompatActivity implements AdapterView.OnItemCl
                 //              mBTDevices.clear();
 //                mDeviceListAdapter.clear();
                     BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-                    device.setPin("1234".getBytes());
-                    mBTDevices.add(device);
-                    Log.d(TAG, "onReceive: " + device.getName());
-                    mDeviceListAdapter = new DeviceListAdapter(context, R.layout.device_adapter_view, mBTDevices);
-                    lvNewDevices.setAdapter(mDeviceListAdapter);
-                    if (dialog.isShowing())
-                        dialog.dismiss();
-
+                    if (isValid(device.getName())) {
+                        device.setPin("1234".getBytes());
+                        mBTDevices.add(device);
+                        Log.d(TAG, "onReceive: " + device.getName());
+                        mDeviceListAdapter = new DeviceListAdapter(context, R.layout.device_adapter_view, mBTDevices);
+                        lvNewDevices.setAdapter(mDeviceListAdapter);
+                        if (dialog.isShowing())
+                            dialog.dismiss();
+                    }
             }
         }
     };
