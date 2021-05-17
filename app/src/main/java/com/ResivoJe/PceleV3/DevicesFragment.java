@@ -42,6 +42,8 @@ public class DevicesFragment extends ListFragment {
     Pattern sPattern = Pattern.compile("^BSRAM(\\d{5,7})$");
     Pattern mPattern = Pattern.compile("^BSram(\\d{5,7})$");
     private static final String TAG = "DEVICES";
+    private Menu menu;
+    private MenuItem i0, i1;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -113,6 +115,9 @@ public class DevicesFragment extends ListFragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_devices, menu);
+        this.menu = menu;
+        this.i0 = menu.getItem(2);
+        this.i1 = menu.getItem(3);
     }
 
     @Override
@@ -147,6 +152,7 @@ public class DevicesFragment extends ListFragment {
             conf.locale = new Locale(localeCode.toLowerCase());
         }
         res.updateConfiguration(conf, dm);
+        getActivity().onConfigurationChanged(getResources().getConfiguration());
     }
 
 
@@ -163,9 +169,13 @@ public class DevicesFragment extends ListFragment {
                 return true;
             case R.id.en_lang:
                 setAppLocale("en");
+                i0.setTitle(R.string.engelski);
+                i1.setTitle(R.string.srpski);
                 return true;
             case R.id.sr_lang:
                 setAppLocale("rs");
+                i0.setTitle(R.string.engelski);
+                i1.setTitle(R.string.srpski);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

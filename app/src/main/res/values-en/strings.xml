@@ -1,30 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">BS sakupljač otrova</string>
-    <string name="devices">Dostupni uređaji</string>
+    <string name="app_name">BS poison collector</string>
+    <string name="devices">Available devices</string>
     <string name="po_ni">Start</string>
     <string name="prekini">Stop</string>
-    <string name="sacuvaj">Sačuvaj parametre</string>
+    <string name="sacuvaj">Save parameters</string>
     <string name="_1">1</string>
-    <string name="vreme">VREME (min)</string>
-    <string name="frekvencija">FREKVENCIJA (Hz)</string>
+    <string name="vreme">TIME (min)</string>
+    <string name="frekvencija">FREQUENCY (Hz)</string>
     <string name="impuls">IMPULS (s)</string>
-    <string name="napon">NAPON (V)</string>
-    <string name="pauza">PAUZA (s)</string>
+    <string name="napon">VOLTAGE (V)</string>
+    <string name="pauza">PAUSE (s)</string>
     <string name="_100">100</string>
     <string name="_10">10</string>
     <string name="_0">0</string>
-    <string name="start_all">POKRENI SVE</string>
-    <string name="get">Čitaj stanje</string>
-    <string name="upali_blutut">UPALI BLUTUT</string>
-    <string name="izaberi_sve">iZABERI SVE</string>
-    <string name="pode_avanja_blututa">Podešavanja blututa</string>
-
-    <string name="engelski">engleski</string>
-    <string name="srpski">srpski</string>
-    <string name="osvezi">Osvezi</string>
-    <string name="blutut_podesavanja">Blutut podesavanja</string>
-    <string name="predefinisano_stanje">Inicialization state</string>
+    <string name="start_all">START ALL</string>
+    <string name="get">Read state</string>
+    <string name="upali_blutut">TURN BLUETOOTH ON</string>
+    <string name="izaberi_sve">CHOOSE ALL</string>
+    <string name="pode_avanja_blututa">Bluetooth settings</string>
+    <string name="engelski">english</string>
+    <string name="srpski">serbian</string>
+    <string name="osvezi">Refresh</string>
+    <string name="blutut_podesavanja">Bluetooth settings</string>
+    <string name="predefinisano_stanje">Initialization state</string>
     <string name="stanje_1">State 1</string>
     <string name="stanje_2">State 2</string>
     <string name="stanje_3">State 3</string>
