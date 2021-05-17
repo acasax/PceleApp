@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">BS collector</string>
+    <string name="app_name">BS sakupljač otrova</string>
     <string name="devices">Dostupni uređaji</string>
     <string name="po_ni">Start</string>
     <string name="prekini">Stop</string>
@@ -19,6 +19,13 @@
     <string name="upali_blutut">UPALI BLUTUT</string>
     <string name="izaberi_sve">iZABERI SVE</string>
     <string name="pode_avanja_blututa">Podešavanja blututa</string>
+
     <string name="engelski">engleski</string>
     <string name="srpski">srpski</string>
+    <string name="osvezi">Osvezi</string>
+    <string name="blutut_podesavanja">Blutut podesavanja</string>
+    <string name="predefinisano_stanje">Inicialization state</string>
+    <string name="stanje_1">State 1</string>
+    <string name="stanje_2">State 2</string>
+    <string name="stanje_3">State 3</string>
 </resources>

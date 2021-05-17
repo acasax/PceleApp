@@ -7,10 +7,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
+import android.content.res.Resources;
+import android.os.Build;
 import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.ListFragment;
 
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -25,6 +29,7 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Locale;
 import java.util.Set;
 import java.util.regex.Pattern;
 
@@ -41,6 +46,7 @@ public class DevicesFragment extends ListFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setHasOptionsMenu(true);
         if (getActivity().getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH)) {
             bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
@@ -71,6 +77,7 @@ public class DevicesFragment extends ListFragment {
                     return view;
                 }
             };
+
             setListAdapter(listAdapter);
 
         }
@@ -130,6 +137,20 @@ public class DevicesFragment extends ListFragment {
         return true;
     }*/
 
+    private void setAppLocale(String localeCode){
+        Resources res = getResources();
+        DisplayMetrics dm = res.getDisplayMetrics();
+        Configuration conf = res.getConfiguration();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN){
+            conf.setLocale(new Locale(localeCode.toLowerCase()));
+        }else {
+            conf.locale = new Locale(localeCode.toLowerCase());
+        }
+        res.updateConfiguration(conf, dm);
+    }
+
+
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
@@ -141,8 +162,10 @@ public class DevicesFragment extends ListFragment {
                 refresh();
                 return true;
             case R.id.en_lang:
+                setAppLocale("en");
                 return true;
             case R.id.sr_lang:
+                setAppLocale("rs");
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
