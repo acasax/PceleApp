@@ -16,22 +16,56 @@
     <string name="start_all">POKRENI SVE</string>
     <string name="get">Čitaj stanje</string>
     <string name="upali_blutut">UPALI BLUTUT</string>
-    <string name="izaberi_sve">iZABERI SVE</string>
+    <string name="izaberi_sve">IZABERI SVE</string>
     <string name="pode_avanja_blututa">Podešavanja blututa</string>
 
-    <string name="engelski">engleski</string>
-    <string name="srpski">srpski</string>
-    <string name="osvezi">Osvezi</string>
-    <string name="blutut_podesavanja">Blutut podesavanja</string>
+    <string name="engelski">Engleski</string>
+    <string name="srpski">Srpski</string>
+    <string name="osvezi">Osveži</string>
+    <string name="blutut_podesavanja">Blutut podešavanja</string>
     <string name="predefinisano_stanje">Predefinisano stanje</string>
     <string name="stanje_1">Stanje 1</string>
     <string name="stanje_2">Stanje 2</string>
     <string name="stanje_3">Stanje 3</string>
     <string name="on_off">ON/OFF</string>
-    <string name="discover">Discover</string>
-    <string name="pair_all">Pair All</string>
+    <string name="discover">Pretraga</string>
+    <string name="pair_all">Poveži sve</string>
     <string name="loading">Učitavanje. Molimo sačekajte...</string>
-    <string name="initializing">initializing...</string>
+    <string name="initializing">Inicijalizacija...</string>
+    <string name="Blutut">Blutut nije dostupan na ovom uređaju</string>
+    <string name="Blutut1">Blutut je ugašen</string>
+    <string name="Blutut2">Nema pronađenih uređaja</string>
+    <string name="BlututS">Servis u pozacini</string>
+    <string name="BlututD">Servis u pozacini</string>
+    <string name="saveState">Odaberi gde želiš da sačuvaš parametre:</string>
+    <string name="save">Sačuvaj</string>
+    <string name="Odustani">Odustani</string>
+    <string name="Povezivanj">Povezivanje...</string>
+    <string name="Povezano">Povezano sa </string>
+    <string name="Povezano1">Povezano</string>
+    <string name="poslata">Poruka poslata </string>
+    <string name="poslataN">Poruka nije poslata  </string>
+    <string name="NijePovezano">nije povezano</string>
+    <string name="PokusajPonovo">Pokušaj Ponovo</string>
+    <string name="UredjajiN">Uređaji, koji nisu uspešno primili komandu su: \n</string>
+    <string name="Uredjaji">Uređaji, koji su uspešno primili komandu su: \n</string>
+    <string name="URedu">U redu</string>
+
+    <string name="NepoznataGreska">Nepoznata greška.</string>
+    <string name="Greska">Greška</string>
+
+    <string name="E0">Uspešno ste poslali komandu. \n</string>
+    <string name="E1">Poruka nije u dobrom formatu. \n</string>
+    <string name="E2">Greška u zadatim parametrima. \n</string>
+    <string name="E3">Komanda se ne može izvršiti. \n</string>
+
+    <string name="R0">Uređaj ne radi. \n</string>
+
+    <string name="Preostalo">Preostalo </string>
+    <string name="MinRada"> min rada uređaja. \n</string>
+
+    <string name="KomandaDoKraja">Uređaj je izvršio komandu do kraja.\n</string>
+    <string name="KonekcijaPrekinuda">Konekcija prekinuta: </string>
 
 </resources>
 

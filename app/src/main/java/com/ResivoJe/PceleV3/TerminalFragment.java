@@ -615,7 +615,7 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
 
                         String message = "";
                         if(successDeviceNames.size() > 0) {
-                            message += "Uređaji, koji su uspešno primili komandu su: \n";
+                            message += getResources().getString(R.string.Uredjaji);
                             for (int i = 0; i < successDeviceNames.size(); i++) {
                                 message += successDeviceNames.get(i).getName() + "\n";
                             }
@@ -623,7 +623,7 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
 
                         if(failedDeviceNames.size() > 0) {
                             message += "\n";
-                            message += "Uređaji, koji nisu uspešno primili komandu su: \n";
+                            message += getResources().getString(R.string.UredjajiN);
                             for (int i = 0; i < failedDeviceNames.size(); i++) {
                                 message += failedDeviceNames.get(i).getName() + "\n";
                             }
@@ -680,28 +680,28 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
             answerText = answerText.replace(">","");
             String[] parts = answerText.split(";");
             // error handling
-            if (parts.length < 1) answerText = "Nepoznata greska.";
+            if (parts.length < 1) answerText = (String) getResources().getText(R.string.NepoznataGreska);
             parts[0] = parts[0].replace("E","");
             String error = "";
             switch (parts[0]) {
-                case "0": error = "Uspesno ste poslali komandu. \n\n"; break;
-                case "1": error = "Poruka nije u dobrom formatu. \n"; break;
-                case "2": error = "Greska u zadatim parametrima. \n"; break;
-                case "3": error = "Komanda se ne moze izvrsiti. \n"; break;
-                default : error = "Nepoznata greska.";
+                case "0": error = (String) getResources().getText(R.string.E0); break;
+                case "1": error = (String) getResources().getText(R.string.E1); break;
+                case "2": error = (String) getResources().getText(R.string.E2); break;
+                case "3": error = (String) getResources().getText(R.string.E3); break;
+                default : error = (String) getResources().getText(R.string.NepoznataGreska);
             }
             if (parts[0].equals("0")) {
                 String deviceState = "";
                 parts[1] = parts[1].replace("A", "");
                 if (parts[1].equals("0")) {
-                    deviceState = "Uredjaj ne radi. \n";
+                    deviceState = (String) getResources().getText(R.string.R0);
                 } else {
                     deviceState = "";
                 }
                 parts[2] = parts[2].replace("R", "");
 
                 if (!sendAllBoolean || (sendAllBoolean && isGet)) {
-                    String timeLeft = "Preostalo " + parts[2] + " min rada uredjaja. \n";
+                    String timeLeft = (String) getResources().getText(R.string.Preostalo) + parts[2] + (String) getResources().getText(R.string.MinRada);
                     String cycle;
                     if (parts.length < 4) {
                         cycle = "";
@@ -710,7 +710,7 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
                         if (parts[3].equals("0")) {
                             cycle = "\n";
                         } else {
-                            cycle = "Uredjaj je izvrsio komandu do kraja.\n";
+                            cycle = (String) getResources().getText(R.string.KomandaDoKraja);
                             deviceState = "";
                             timeLeft = "";
                         }
@@ -743,7 +743,7 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
      */
     @Override
     public void onSerialConnect() {
-        status("Povezano");
+        status((String) getResources().getText(R.string.Povezano1));
         connected = Connected.True;
         new Thread(new Runnable() {
             @Override
@@ -758,7 +758,7 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
 
     @Override
     public void onSerialConnectError(Exception e) {
-        status("Greška: " + e.getMessage());
+        status(getResources().getText(R.string.Greska) + e.getMessage());
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -777,7 +777,7 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
 
     @Override
     public void onSerialIoError(Exception e) {
-        status("Konekcija prekinuta: " + e.getMessage());
+        status(getResources().getText(R.string.KonekcijaPrekinuda) + e.getMessage());
         disconnect();
     }
 
