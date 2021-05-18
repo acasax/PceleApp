@@ -289,7 +289,7 @@ public class btsetings extends AppCompatActivity implements AdapterView.OnItemCl
                 synchronized (this) {
                     if (mBTDevices != null) {
                         for (int i = 0; i < mBTDevices.size(); i++) {
-                            Log.d("BT", "Popusis mi pinovani kurac");
+                            //Log.d("BT", "Popusis mi pinovani kurac");
                             mBTDevices.get(i).setPin("1234".getBytes());
                             mBTDevices.get(i).createBond();
                             mBTDevices.get(i).setPin("1234".getBytes());

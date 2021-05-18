@@ -27,5 +27,10 @@
     <string name="stanje_1">Stanje 1</string>
     <string name="stanje_2">Stanje 2</string>
     <string name="stanje_3">Stanje 3</string>
+    <string name="on_off">ON/OFF</string>
+    <string name="discover">Discover</string>
+    <string name="pair_all">Pair All</string>
+    <string name="loading">Učitavanje. Molimo sačekajte...</string>
+
 </resources>
 
