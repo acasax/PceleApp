@@ -126,7 +126,7 @@ public class SerialService extends Service implements SerialListener {
 
     private void createNotification() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel nc = new NotificationChannel(Constants.NOTIFICATION_CHANNEL, "Background service", NotificationManager.IMPORTANCE_LOW);
+            NotificationChannel nc = new NotificationChannel(Constants.NOTIFICATION_CHANNEL, getResources().getText(R.string.BlututS), NotificationManager.IMPORTANCE_LOW);
             nc.setShowBadge(false);
             NotificationManager nm = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
             nm.createNotificationChannel(nc);

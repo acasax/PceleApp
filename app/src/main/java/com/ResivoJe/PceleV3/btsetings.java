@@ -373,7 +373,7 @@ public class btsetings extends AppCompatActivity implements AdapterView.OnItemCl
             IntentFilter discoverDevicesIntent = new IntentFilter(BluetoothDevice.ACTION_FOUND);
             registerReceiver(mBroadcastReceiver3, discoverDevicesIntent);
             dialog = ProgressDialog.show(btsetings.this, "",
-                    "Loading. Please wait...", true);
+                    getResources().getString(R.string.loading), true);
         }
     }
 
@@ -384,6 +384,7 @@ public class btsetings extends AppCompatActivity implements AdapterView.OnItemCl
      *
      * NOTE: This will only execute on versions > LOLLIPOP because it is not needed otherwise.
      */
+
     private void checkBTPermissions() {
         if(Build.VERSION.SDK_INT > Build.VERSION_CODES.M){
             int permissionCheck = this.checkSelfPermission("Manifest.permission.ACCESS_FINE_LOCATION");
@@ -417,7 +418,6 @@ public class btsetings extends AppCompatActivity implements AdapterView.OnItemCl
 
               String pin = "1234";
 
-              Log.d("TAG","Popusis mi pinovani kurac");
               mBTDevices.get(i).setPin("1234".getBytes());
               mBTDevices.get(i).createBond();
         }

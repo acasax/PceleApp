@@ -223,11 +223,11 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
 
                 ArrayAdapter<String> adapter = new ArrayAdapter<String>(TerminalFragment.this.getContext(),
                         android.R.layout.select_dialog_multichoice);
-                adapter.add("Stanje 1");
-                adapter.add("Stanje 2");
-                adapter.add("Stanje 3");
+                adapter.add((String) getResources().getText(R.string.stanje_1));
+                adapter.add((String) getResources().getText(R.string.stanje_1));
+                adapter.add((String) getResources().getText(R.string.stanje_1));
 
-                builder1.setTitle("Odaberi gde želiš da sačuvaš parametre:");
+                builder1.setTitle(getResources().getText(R.string.saveState));
                 builder1.setSingleChoiceItems(adapter, 0, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -236,7 +236,7 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
                 });
 
                 builder1.setPositiveButton(
-                        "Sačuvaj",
+                        getResources().getText(R.string.save),
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
                                 saveState();
@@ -244,7 +244,7 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
                             }
                         });
                 builder1.setNegativeButton(
-                            "Odustani",
+                        getResources().getText(R.string.Odustani),
                             new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int id) {
                                     dialog.cancel();
@@ -486,10 +486,10 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
             BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
             BluetoothDevice device = bluetoothAdapter.getRemoteDevice(deviceAddress);
             String deviceName = device.getName() != null ? device.getName() : device.getAddress();
-            status("Povezivanje...");
+            status((String) getResources().getText(R.string.Povezivanj));
             connected = Connected.Pending;
             socket = new SerialSocket();
-            service.connect(this, "Povezano sa " + deviceName);
+            service.connect(this, getResources().getText(R.string.Povezano) + deviceName);
             socket.connect(getContext(), service, device);
         } catch (Exception e) {
             onSerialConnectError(e);
@@ -502,10 +502,10 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
     private void connectAndSend(BluetoothDevice device) {
         try {
             String deviceName = device.getName() != null ? device.getName() : device.getAddress();
-            status("Povezivanje...");
+            status((String) getResources().getText(R.string.Povezivanj));
             connected = Connected.Pending;
             socket = new SerialSocket();
-            service.connect(this, "Povezano sa " + deviceName);
+            service.connect(this, getResources().getText(R.string.Povezano) + deviceName);
             socket.connect(getContext(), service, device);
 
             synchronized(syncObject) {
@@ -527,7 +527,7 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        Toast.makeText(getActivity(), "Poruka poslata " + device.getName(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(), getResources().getText(R.string.poslata) + device.getName(), Toast.LENGTH_SHORT).show();
                     }
                 });
             }
@@ -536,7 +536,7 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        Toast.makeText(getActivity(), "Poruka nije poslata " + device.getName(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(), getResources().getText(R.string.poslataN) + device.getName(), Toast.LENGTH_SHORT).show();
                     }
                 });
             }
@@ -556,7 +556,7 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
 
     private void send(String str) {
         if (connected != Connected.True) {
-            Toast.makeText(getActivity(), "nije povezano", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), getResources().getText(R.string.NijePovezano), Toast.LENGTH_SHORT).show();
             return;
         }
         try {
@@ -610,8 +610,8 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
                     public void run() {
                         AlertDialog.Builder builder1 = new AlertDialog.Builder(getContext());
 
-                        String positiveMessage = "Pokušaj Ponovo";
-                        String negativeMessage = "Odustani";
+                        String positiveMessage = (String) getResources().getText(R.string.PokusajPonovo);
+                        String negativeMessage = (String) getResources().getText(R.string.Odustani);
 
                         String message = "";
                         if(successDeviceNames.size() > 0) {

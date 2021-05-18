@@ -96,7 +96,7 @@ public class DevicesFragment extends ListFragment {
         setListAdapter(null);
         View header = getActivity().getLayoutInflater().inflate(R.layout.device_list_header, null, false);
         getListView().addHeaderView(header, null, false);
-        setEmptyText("initializing...");
+        setEmptyText(getResources().getText(R.string.initializing));
         ((TextView) getListView().getEmptyView()).setTextSize(18);
         setListAdapter(listAdapter);
         if (ValidDevice.size() > 0){
@@ -126,21 +126,6 @@ public class DevicesFragment extends ListFragment {
 
         refresh();
     }
-
-    //Funkcija za jezik zamenu
-   /* private boolean setNewLocale(String language, boolean restartProcess) {
-        App.localeManager.setNewLocale(this, language);
-
-        Intent i = new Intent(this, MainActivity.class);
-        startActivity(i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK));
-
-        if (restartProcess) {
-            System.exit(0);
-        } else {
-            Toast.makeText(this, "Activity restarted", Toast.LENGTH_SHORT).show();
-        }
-        return true;
-    }*/
 
     private void setAppLocale(String localeCode){
         Resources res = getResources();
@@ -181,28 +166,14 @@ public class DevicesFragment extends ListFragment {
                 return super.onOptionsItemSelected(item);
         }
     }
-        /*if (id == R.id.bt_settings) {
-            Intent intent = new Intent();
-            intent.setAction(android.provider.Settings.ACTION_BLUETOOTH_SETTINGS);
-            startActivity(intent);
-            return true;
-        } else {
-            return super.onOptionsItemSelected(item);
-        }
-        if (id == R.id.clear) {
-            refresh();
-            return true;
-        } else {
-            return super.onOptionsItemSelected(item);
-        }*/
 
-     //dodaj dugme za refres
+    //dodaj dugme za refres
     void refresh() {
         AllDevice.clear();
         if(bluetoothAdapter == null)
-            setEmptyText("Blutut nije dostupan na ovom uređaju");
+            setEmptyText(getResources().getText(R.string.Blutut));
         else if(!bluetoothAdapter.isEnabled())
-            setEmptyText("Blutut je ugašen");
+            setEmptyText(getResources().getText(R.string.Blutut1));
         else {
             if (getActivity().getPackageManager().hasSystemFeature(PackageManager.FEATURE_BLUETOOTH)) {
                 ValidDevice.clear();
@@ -238,7 +209,7 @@ public class DevicesFragment extends ListFragment {
 
             }
             if (ValidDevice.size() == 0){
-                setEmptyText("Nema pronađenih uređaja");
+                setEmptyText(getResources().getText(R.string.Blutut2));
             }
         }
         if(bluetoothAdapter != null) {

@@ -31,4 +31,22 @@
     <string name="discover">Discover</string>
     <string name="pair_all">Pair All</string>
     <string name="loading">Loading.Please wait....</string>
+    <string name="initializing">initializing...</string>
+    <string name="Blutut">Blutut nije dostupan na ovom uređaju</string>
+    <string name="Blutut1">Blutut je ugašen</string>
+    <string name="Blutut2">Nema pronađenih uređaja</string>
+    <string name="BlututS">Background service</string>
+    <string name="BlututD">background disconnect</string>
+    <string name="saveState">Odaberi gde želiš da sačuvaš parametre:</string>
+    <string name="save">Sačuvaj</string>
+    <string name="Odustani">Odustani</string>
+    <string name="Povezivanj">Povezivanje...</string>
+    <string name="Povezano">Povezano sa </string>
+    <string name="poslata">Poruka poslata </string>
+    <string name="poslataN">Poruka nije poslata  </string>
+    <string name="NijePovezano">nije povezano</string>
+    <string name="PokusajPonovo">Pokušaj Ponovo</string>
+    <string name="Uredjaji">"Uređaji, koji nisu uspešno primili komandu su: \n"</string>
+    <string name="URedu">U redu</string>
+
 </resources>
