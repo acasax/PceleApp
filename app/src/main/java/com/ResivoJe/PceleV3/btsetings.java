@@ -347,7 +347,7 @@ public class btsetings extends AppCompatActivity implements AdapterView.OnItemCl
             IntentFilter discoverDevicesIntent = new IntentFilter(BluetoothDevice.ACTION_FOUND);
             registerReceiver(mBroadcastReceiver3, discoverDevicesIntent);
             dialog = ProgressDialog.show(btsetings.this, "",
-                    "Loading. Please wait...", true);
+                    getResources().getString(R.string.loading), true);
             new Thread(new Runnable() {
                 @Override
                 public void run() {

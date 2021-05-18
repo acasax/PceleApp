@@ -27,4 +27,8 @@
     <string name="stanje_1">State 1</string>
     <string name="stanje_2">State 2</string>
     <string name="stanje_3">State 3</string>
+    <string name="on_off">ON/OFF</string>
+    <string name="discover">Discover</string>
+    <string name="pair_all">Pair All</string>
+    <string name="loading">Loading.Please wait....</string>
 </resources>
