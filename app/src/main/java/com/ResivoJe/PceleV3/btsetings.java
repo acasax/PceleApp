@@ -289,7 +289,6 @@ public class btsetings extends AppCompatActivity implements AdapterView.OnItemCl
                 synchronized (this) {
                     if (mBTDevices != null) {
                         for (int i = 0; i < mBTDevices.size(); i++) {
-                            //Log.d("BT", "Popusis mi pinovani kurac");
                             mBTDevices.get(i).setPin("1234".getBytes());
                             mBTDevices.get(i).createBond();
                             mBTDevices.get(i).setPin("1234".getBytes());
@@ -365,15 +364,30 @@ public class btsetings extends AppCompatActivity implements AdapterView.OnItemCl
         }
         if(!mBluetoothAdapter.isDiscovering()){
 
+
             //check BT permissions in manifest
             checkBTPermissions();
-            mBTDevices.clear();
 
+            mBTDevices.clear();
             mBluetoothAdapter.startDiscovery();
             IntentFilter discoverDevicesIntent = new IntentFilter(BluetoothDevice.ACTION_FOUND);
             registerReceiver(mBroadcastReceiver3, discoverDevicesIntent);
             dialog = ProgressDialog.show(btsetings.this, "",
                     getResources().getString(R.string.loading), true);
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+
+                    try {
+                        Thread.sleep(15000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    if (dialog != null && dialog.isShowing()){
+                        dialog.dismiss();
+                    }
+                }
+            }).start();
         }
     }
 
@@ -387,11 +401,13 @@ public class btsetings extends AppCompatActivity implements AdapterView.OnItemCl
 
     private void checkBTPermissions() {
         if(Build.VERSION.SDK_INT > Build.VERSION_CODES.M){
-            int permissionCheck = this.checkSelfPermission("Manifest.permission.ACCESS_FINE_LOCATION");
-            permissionCheck += this.checkSelfPermission("Manifest.permission.ACCESS_COARSE_LOCATION");
-            if (permissionCheck != 0) {
-
-                this.requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, 1001); //Any number
+            if (this.checkSelfPermission("Manifest.permission.ACCESS_FINE_LOCATION")  != PackageManager.PERMISSION_GRANTED)
+            {
+                this.requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 5250); //Any number
+            }
+            if (this.checkSelfPermission("Manifest.permission.ACCESS_COARSE_LOCATION")  != PackageManager.PERMISSION_GRANTED)
+            {
+                this.requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 5251); //Any number
             }
         }else{
             Log.d(TAG, "checkBTPermissions: No need to check permissions. SDK version < LOLLIPOP.");
