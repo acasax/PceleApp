@@ -45,7 +45,7 @@
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
             android:layout_weight="1"
-            android:onClick="btnEnableDisable_Discoverable"
+            android:onClick="PairAll"
             android:text="@string/pair_all" />
     </LinearLayout>
     <ListView

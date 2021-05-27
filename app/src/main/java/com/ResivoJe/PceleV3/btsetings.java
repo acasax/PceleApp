@@ -24,12 +24,15 @@ import android.Manifest;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.Fragment;
 
 public class btsetings extends AppCompatActivity implements AdapterView.OnItemClickListener {
 
@@ -43,11 +46,10 @@ public class btsetings extends AppCompatActivity implements AdapterView.OnItemCl
 
     ListView lvNewDevices;
     ProgressDialog dialog = null;
-    Pattern sPattern = Pattern.compile("^BSRAM(\\d{5,7})$");
-    Pattern mPattern = Pattern.compile("^BSram(\\d{5,7})$");
+    Pattern sPattern = Pattern.compile("^BS(RAM|ram)((([A-Z])|([a-z])|([0-9])){0,18})$");
 
     boolean isValid(CharSequence s) {
-        return sPattern.matcher(s).matches() || mPattern.matcher(s).matches();
+        return sPattern.matcher(s).matches();
     }
     // Create a BroadcastReceiver for ACTION_FOUND
     private final BroadcastReceiver mBroadcastReceiver1 = new BroadcastReceiver() {
@@ -71,6 +73,16 @@ public class btsetings extends AppCompatActivity implements AdapterView.OnItemCl
                         Log.d(TAG, "mBroadcastReceiver1: STATE TURNING ON");
                         break;
                 }
+            }
+
+            if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {
+                //change button back to "Start"
+                if (dialog != null) {
+                    if (dialog.isShowing())
+                        dialog.dismiss();
+                }
+                //report user
+                Log.d(TAG,"Finished");
             }
         }
     };
@@ -127,21 +139,36 @@ public class btsetings extends AppCompatActivity implements AdapterView.OnItemCl
             Log.d(TAG, "onReceive: ACTION FOUND.");
 
             if (action.equals(BluetoothDevice.ACTION_FOUND)) {
-                //              mBTDevices.clear();
-//                mDeviceListAdapter.clear();
-                    BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-                    if (isValid(device.getName())) {
-                        device.setPin("1234".getBytes());
-                        mBTDevices.add(device);
-                        Log.d(TAG, "onReceive: " + device.getName());
-                        mDeviceListAdapter = new DeviceListAdapter(context, R.layout.device_adapter_view, mBTDevices);
-                        lvNewDevices.setAdapter(mDeviceListAdapter);
-                        if (dialog.isShowing())
-                            dialog.dismiss();
+
+                BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+                if (device == null) {
+                    return;
+                }
+                if (device.getName() == null) {
+                    return;
+                }
+                if (isValid(device.getName())) {
+                    Log.d(TAG, "onReceive: " + device.getName());
+                    for (int i = 0; i < mBTDevices.size(); i++) {
+                        if (mBTDevices.get(i).getName().equals(device.getName())) {
+                            return;
+                        }
                     }
+                    if (device.getBondState() == BluetoothDevice.BOND_BONDED) {
+                        Log.d(TAG, "onReceive: " + device.getName() + " is PAIRED");
+                        return;
+                    }
+                    device.setPin("1234".getBytes());
+                    mBTDevices.add(device);
+                    mDeviceListAdapter = new DeviceListAdapter(context, R.layout.device_adapter_view, mBTDevices);
+                    lvNewDevices.setAdapter(mDeviceListAdapter);
+
+                }
             }
+
         }
     };
+
 
     /**
      * Broadcast Receiver that detects bond state changes (Pairing status changes)
@@ -167,7 +194,35 @@ public class btsetings extends AppCompatActivity implements AdapterView.OnItemCl
                 }
                 //case2: creating a bone
                 if (mDevice.getBondState() == BluetoothDevice.BOND_BONDING) {
-                    mDevice.setPin("1234".getBytes());
+                    checkBTPermissions();
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            for (int i = 0; i < 5; i++) {
+                                List<Fragment> fragments = btsetings.this.getSupportFragmentManager().getFragments();
+                                if (fragments != null) {
+                                    for (Fragment fragment : fragments) {
+                                        if (fragment instanceof DialogFragment) {
+                                            ((DialogFragment) fragment).dismiss();
+                                        }
+                                    }
+                                }
+
+                                if (mDevice.setPin("1234".getBytes())) {
+                                    Log.d(TAG, "BroadcastReceiver: BOND_BONDING. ENTERING THE PIN SUCCESSFULLY");
+                                    break;
+                                } else {
+                                    Log.d(TAG, "BroadcastReceiver: BOND_BONDING. ENTERING THE PIN UNSUCCESSFULLY");
+                                }
+                                try {
+                                    Thread.sleep(1000);
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        }
+                    }).start();
+
                     Log.d(TAG, "BroadcastReceiver: BOND_BONDING.");
                 }
                 //case3: breaking a bond
@@ -190,12 +245,6 @@ public class btsetings extends AppCompatActivity implements AdapterView.OnItemCl
             }catch (IllegalArgumentException e){
                 e.printStackTrace();
             }
-        if (mBroadcastReceiver2 != null)
-            try {
-                unregisterReceiver(mBroadcastReceiver2);
-            }catch (IllegalArgumentException e){
-                e.printStackTrace();
-            }
         if (mBroadcastReceiver3 != null)
             try {
                 unregisterReceiver(mBroadcastReceiver3);
@@ -208,7 +257,9 @@ public class btsetings extends AppCompatActivity implements AdapterView.OnItemCl
             }catch (IllegalArgumentException e){
                 e.printStackTrace();
             }
-        mBluetoothAdapter.cancelDiscovery();
+        if(mBluetoothAdapter.isDiscovering()) {
+            mBluetoothAdapter.cancelDiscovery();
+        }
     }
 
     @Override
@@ -224,10 +275,27 @@ public class btsetings extends AppCompatActivity implements AdapterView.OnItemCl
         mBTDevices = new ArrayList<>();
 
         //Broadcasts when bond state changes (ie:pairing)
+
+        IntentFilter BTIntent = new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED);
+        registerReceiver(mBroadcastReceiver1, BTIntent);
+
+//
+//        IntentFilter discoverDevicesIntent = new IntentFilter(BluetoothAdapter.ACTION_SCAN_MODE_CHANGED);
+//        registerReceiver(mBroadcastReceiver2, discoverDevicesIntent);
+
+        IntentFilter discoverIntent = new IntentFilter(BluetoothDevice.ACTION_FOUND);
+        registerReceiver(mBroadcastReceiver3, discoverIntent);
+
+        IntentFilter finishIntent = new IntentFilter(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
+        registerReceiver(mBroadcastReceiver1, finishIntent);
+
         IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_BOND_STATE_CHANGED);
         registerReceiver(mBroadcastReceiver4, filter);
 
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        if(mBluetoothAdapter.isDiscovering()) {
+            mBluetoothAdapter.cancelDiscovery();
+        }
 
         lvNewDevices.setOnItemClickListener(btsetings.this);
 
@@ -250,22 +318,15 @@ public class btsetings extends AppCompatActivity implements AdapterView.OnItemCl
             Intent enableBTIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             startActivity(enableBTIntent);
 
-            IntentFilter BTIntent = new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED);
-            registerReceiver(mBroadcastReceiver1, BTIntent);
         }
         if(mBluetoothAdapter.isEnabled()){
             Log.d(TAG, "enableDisableBT: disabling BT.");
             mBluetoothAdapter.disable();
-
-            IntentFilter BTIntent = new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED);
-            registerReceiver(mBroadcastReceiver1, BTIntent);
         }
 
     }
 
-    // od sad je ovo pair all al aj da ne menjamo ime sad
-    //
-    public void btnEnableDisable_Discoverable(View view) {
+    public void PairAll(View view) {
 //        Log.d(TAG, "btnEnableDisable_Discoverable: Making device discoverable for 300 seconds.");
 //
 //        Intent discoverableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
@@ -275,19 +336,20 @@ public class btsetings extends AppCompatActivity implements AdapterView.OnItemCl
 //        IntentFilter intentFilter = new IntentFilter(mBluetoothAdapter.ACTION_SCAN_MODE_CHANGED);
 //        registerReceiver(mBroadcastReceiver2,intentFilter);
 
-
         ProgressDialog progress = new ProgressDialog(this);
         progress.setMessage("Pairing devices");
         progress.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
         progress.setProgress(0);
         progress.setMax(mBTDevices.size());
         progress.show();
+        checkBTPermissions();
 
         pairingThread = new Thread(new Runnable() {
             @Override
             public void run() {
                 synchronized (this) {
                     if (mBTDevices != null) {
+
                         for (int i = 0; i < mBTDevices.size(); i++) {
                             mBTDevices.get(i).setPin("1234".getBytes());
                             mBTDevices.get(i).createBond();
@@ -300,15 +362,6 @@ public class btsetings extends AppCompatActivity implements AdapterView.OnItemCl
                             }
                             mBTDevices.get(i).setPin("1234".getBytes());
 
-                            final int jebenoI = i + 1;
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    Log.d("BT", "Index " + jebenoI);
-
-                                    progress.setProgress(jebenoI);
-                                }
-                            });
                             Log.d("BT", "Index " + i + " Number of devices" + mBTDevices.size());
                         }
                         try {
@@ -320,6 +373,8 @@ public class btsetings extends AppCompatActivity implements AdapterView.OnItemCl
                             @Override
                             public void run() {
                                 progress.dismiss();
+                                mBTDevices.clear();
+                                lvNewDevices.clearChoices();
                             }
                         });
                     }
@@ -342,9 +397,9 @@ public class btsetings extends AppCompatActivity implements AdapterView.OnItemCl
             checkBTPermissions();
 
             mBTDevices.clear();
+            lvNewDevices.clearChoices();
             mBluetoothAdapter.startDiscovery();
-            IntentFilter discoverDevicesIntent = new IntentFilter(BluetoothDevice.ACTION_FOUND);
-            registerReceiver(mBroadcastReceiver3, discoverDevicesIntent);
+
             dialog = ProgressDialog.show(btsetings.this, "",
                     getResources().getString(R.string.loading), true);
             new Thread(new Runnable() {
@@ -352,7 +407,7 @@ public class btsetings extends AppCompatActivity implements AdapterView.OnItemCl
                 public void run() {
 
                     try {
-                        Thread.sleep(15000);
+                        Thread.sleep(30000);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
@@ -370,8 +425,7 @@ public class btsetings extends AppCompatActivity implements AdapterView.OnItemCl
 
             mBTDevices.clear();
             mBluetoothAdapter.startDiscovery();
-            IntentFilter discoverDevicesIntent = new IntentFilter(BluetoothDevice.ACTION_FOUND);
-            registerReceiver(mBroadcastReceiver3, discoverDevicesIntent);
+
             dialog = ProgressDialog.show(btsetings.this, "",
                     getResources().getString(R.string.loading), true);
             new Thread(new Runnable() {
@@ -379,7 +433,7 @@ public class btsetings extends AppCompatActivity implements AdapterView.OnItemCl
                 public void run() {
 
                     try {
-                        Thread.sleep(15000);
+                        Thread.sleep(30000);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
@@ -401,14 +455,27 @@ public class btsetings extends AppCompatActivity implements AdapterView.OnItemCl
 
     private void checkBTPermissions() {
         if(Build.VERSION.SDK_INT > Build.VERSION_CODES.M){
+
             if (this.checkSelfPermission("Manifest.permission.ACCESS_FINE_LOCATION")  != PackageManager.PERMISSION_GRANTED)
             {
                 this.requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 5250); //Any number
             }
+
             if (this.checkSelfPermission("Manifest.permission.ACCESS_COARSE_LOCATION")  != PackageManager.PERMISSION_GRANTED)
             {
                 this.requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 5251); //Any number
             }
+
+            if (this.checkSelfPermission("Manifest.permission.BLUETOOTH")  != PackageManager.PERMISSION_GRANTED)
+            {
+                this.requestPermissions(new String[]{Manifest.permission.BLUETOOTH}, 5253); //Any number
+            }
+
+            if (this.checkSelfPermission("Manifest.permission.BLUETOOTH_ADMIN")  != PackageManager.PERMISSION_GRANTED)
+            {
+                this.requestPermissions(new String[]{Manifest.permission.BLUETOOTH_ADMIN}, 5252); //Any number
+            }
+
         }else{
             Log.d(TAG, "checkBTPermissions: No need to check permissions. SDK version < LOLLIPOP.");
         }

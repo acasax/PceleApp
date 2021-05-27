@@ -39,8 +39,7 @@ public class DevicesFragment extends ListFragment {
     private ArrayList<BluetoothDevice> AllDevice = new ArrayList<>();
     private ArrayList<BluetoothDevice> ValidDevice = new ArrayList<>();
     private ArrayAdapter<BluetoothDevice> listAdapter;
-    Pattern sPattern = Pattern.compile("^BSRAM(\\d{5,7})$");
-    Pattern mPattern = Pattern.compile("^BSram(\\d{5,7})$");
+    Pattern sPattern = Pattern.compile("^BS(RAM|ram)((([A-Z])|([a-z])|([0-9])){0,18})$");
     private static final String TAG = "DEVICES";
     private Menu menu;
     private MenuItem i0, i1;
@@ -87,7 +86,7 @@ public class DevicesFragment extends ListFragment {
     }
 
     boolean isValid(CharSequence s) {
-        return sPattern.matcher(s).matches() || mPattern.matcher(s).matches();
+        return sPattern.matcher(s).matches();
     }
 
     @Override
