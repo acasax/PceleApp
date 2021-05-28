@@ -158,7 +158,7 @@ public class btsetings extends AppCompatActivity implements AdapterView.OnItemCl
                         Log.d(TAG, "onReceive: " + device.getName() + " is PAIRED");
                         return;
                     }
-                    device.setPin("1234".getBytes());
+                    device.setPin("7214".getBytes());
                     mBTDevices.add(device);
                     mDeviceListAdapter = new DeviceListAdapter(context, R.layout.device_adapter_view, mBTDevices);
                     lvNewDevices.setAdapter(mDeviceListAdapter);
@@ -208,7 +208,7 @@ public class btsetings extends AppCompatActivity implements AdapterView.OnItemCl
                                     }
                                 }
 
-                                if (mDevice.setPin("1234".getBytes())) {
+                                if (mDevice.setPin("7214".getBytes())) {
                                     Log.d(TAG, "BroadcastReceiver: BOND_BONDING. ENTERING THE PIN SUCCESSFULLY");
                                     break;
                                 } else {
@@ -351,16 +351,16 @@ public class btsetings extends AppCompatActivity implements AdapterView.OnItemCl
                     if (mBTDevices != null) {
 
                         for (int i = 0; i < mBTDevices.size(); i++) {
-                            mBTDevices.get(i).setPin("1234".getBytes());
+                            mBTDevices.get(i).setPin("7214".getBytes());
                             mBTDevices.get(i).createBond();
-                            mBTDevices.get(i).setPin("1234".getBytes());
+                            mBTDevices.get(i).setPin("7214".getBytes());
 
                             try {
                                 wait(15000);
                             } catch (InterruptedException e) {
                                 e.printStackTrace();
                             }
-                            mBTDevices.get(i).setPin("1234".getBytes());
+                            mBTDevices.get(i).setPin("7214".getBytes());
 
                             Log.d("BT", "Index " + i + " Number of devices" + mBTDevices.size());
                         }
@@ -499,9 +499,9 @@ public class btsetings extends AppCompatActivity implements AdapterView.OnItemCl
         if(Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN_MR2){
             Log.d(TAG, "Trying to pair with " + deviceName);
 
-              String pin = "1234";
+              String pin = "7214";
 
-              mBTDevices.get(i).setPin("1234".getBytes());
+              mBTDevices.get(i).setPin("7214".getBytes());
               mBTDevices.get(i).createBond();
         }
     }
