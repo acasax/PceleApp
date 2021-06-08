@@ -41,7 +41,7 @@ public class btsetings extends AppCompatActivity implements AdapterView.OnItemCl
     Button btnEnableDisable_Discoverable;
 
     public ArrayList<BluetoothDevice> mBTDevices = new ArrayList<>();
-    Thread pairingThread = null;
+    Thread pairingThread = new Thread();
     public DeviceListAdapter mDeviceListAdapter;
 
     ListView lvNewDevices;
@@ -361,7 +361,8 @@ public class btsetings extends AppCompatActivity implements AdapterView.OnItemCl
                                 e.printStackTrace();
                             }
                             mBTDevices.get(i).setPin("7214".getBytes());
-
+                            progress.setProgress(i+1);
+                            progress.show();
                             Log.d("BT", "Index " + i + " Number of devices" + mBTDevices.size());
                         }
                         try {
@@ -380,7 +381,7 @@ public class btsetings extends AppCompatActivity implements AdapterView.OnItemCl
                     }
                 }
 
-                pairingThread = null;
+                pairingThread = new Thread();
             }
         });
         pairingThread.start();
