@@ -356,7 +356,7 @@ public class btsetings extends AppCompatActivity implements AdapterView.OnItemCl
                             mBTDevices.get(i).setPin("7214".getBytes());
 
                             try {
-                                wait(15000);
+                                Thread.sleep(10000);
                             } catch (InterruptedException e) {
                                 e.printStackTrace();
                             }
@@ -500,10 +500,24 @@ public class btsetings extends AppCompatActivity implements AdapterView.OnItemCl
         if(Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN_MR2){
             Log.d(TAG, "Trying to pair with " + deviceName);
 
-              String pin = "7214";
+            String pin = "7214";
 
-              mBTDevices.get(i).setPin("7214".getBytes());
-              mBTDevices.get(i).createBond();
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    mBTDevices.get(i).setPin("7214".getBytes());
+                    mBTDevices.get(i).createBond();
+                    mBTDevices.get(i).setPin("7214".getBytes());
+
+                    try {
+                        Thread.sleep(10000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    mBTDevices.get(i).setPin("7214".getBytes());
+                }
+            }).start();
+
         }
     }
 
