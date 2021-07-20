@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">BS poison collector</string>
+    <string name="devices">Available devices</string>
+    <string name="po_ni">Start</string>
+    <string name="prekini">Stop</string>
+    <string name="sacuvaj">Save parameters</string>
+    <string name="_1">1</string>
+    <string name="vreme">TIME (min)</string>
+    <string name="frekvencija">FREQUENCY (Hz)</string>
+    <string name="impuls">IMPULS (s)</string>
+    <string name="napon">VOLTAGE (V)</string>
+    <string name="pauza">PAUSE (s)</string>
+    <string name="_100">100</string>
+    <string name="_10">10</string>
+    <string name="_0">0</string>
+    <string name="start_all">START ALL</string>
+    <string name="get">Read state</string>
+    <string name="upali_blutut">TURN BLUETOOTH ON</string>
+    <string name="izaberi_sve">CHOOSE ALL</string>
+    <string name="pode_avanja_blututa">Bluetooth settings</string>
+    <string name="engelski">english</string>
+    <string name="srpski">serbian</string>
+    <string name="osvezi">Refresh</string>
+    <string name="blutut_podesavanja">Bluetooth settings</string>
+    <string name="predefinisano_stanje">Initialization state</string>
+    <string name="stanje_1">State 1</string>
+    <string name="stanje_2">State 2</string>
+    <string name="stanje_3">State 3</string>
+    <string name="on_off">ON/OFF</string>
+    <string name="discover">Discover</string>
+    <string name="pair_all">Pair All</string>
+    <string name="loading">Loading.Please wait....</string>
+    <string name="initializing">initializing...</string>
+    <string name="Blutut">Bluetooth is not available on this device.</string>
+    <string name="Blutut1">The bluetooth is off</string>
+    <string name="Blutut2">No devices found</string>
+    <string name="BlututS">Background service</string>
+    <string name="BlututD">background disconnect</string>
+    <string name="saveState">Select where you want to save the parameters:</string>
+    <string name="save">Save</string>
+    <string name="Odustani">Cancle</string>
+    <string name="Povezivanj">Connecting...</string>
+    <string name="Povezano">Connected to </string>
+    <string name="Povezano1">Connected</string>
+    <string name="poslata">Message sent </string>
+    <string name="poslataN">Message not sent  </string>
+    <string name="NijePovezano">not connected</string>
+    <string name="PokusajPonovo">Try again</string>
+    <string name="UredjajiN">Devices that did not successfully receive the command are: \n</string>
+    <string name="Uredjaji">The devices that have successfully received the command are: \n</string>
+    <string name="URedu">OK</string>
+
+    <string name="NepoznataGreska">Unknown error.</string>
+    <string name="Greska">Error</string>
+
+    <string name="E0">You have successfully sent the command. \n</string>
+    <string name="E1">The message is not in a good format. \n</string>
+    <string name="E2">Error in set parameters. \n</string>
+    <string name="E3">The command cannot be executed. \n</string>
+
+    <string name="R0">The device does not work. \n</string>
+
+    <string name="Preostalo">The send </string>
+    <string name="MinRada"> min of device operation. \n</string>
+
+    <string name="KomandaDoKraja">The device executed the command to the end.\n</string>
+    <string name="KonekcijaPrekinuda">Connection aborted: </string>
+
+</resources>

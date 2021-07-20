@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/clear"
+        android:icon="@drawable/ic_refresh"
+        android:title="@string/osvezi"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/drkajBlutut"
+        android:icon="@drawable/bt"
+        android:title="@string/blutut_podesavanja"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/en_lang"
+        android:title="@string/engelski"
+        app:iconTint="@color/black"/>
+    <item
+        android:id="@+id/sr_lang"
+        android:title="@string/srpski"
+        app:iconTint="@color/black"/>
+
+</menu>
+

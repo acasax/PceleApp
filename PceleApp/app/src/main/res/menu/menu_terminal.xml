@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/default_state"
+        android:title="@string/predefinisano_stanje"
+        app:iconTint="@color/black"/>
+    <item
+        android:id="@+id/state_1"
+        android:title="@string/stanje_1"
+        app:iconTint="@color/black"/>
+    <item
+        android:id="@+id/state_2"
+        android:title="@string/stanje_2"
+        app:iconTint="@color/black"/>
+
+    <item
+        android:id="@+id/state_3"
+        android:title="@string/stanje_3"
+        app:iconTint="@color/black"/>
+
+</menu>
