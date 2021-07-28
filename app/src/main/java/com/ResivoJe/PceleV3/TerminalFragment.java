@@ -398,7 +398,7 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
         //
         MyRoomDatabase myRoomDatabase = MyRoomDatabase.getDatabase(getContext());
         final LiveData<List<Parameters>> listLiveData = myRoomDatabase.parametersDAO().getAll();
-        listLiveData.observe(TerminalFragment.this, new Observer<List<Parameters>>(){
+        listLiveData.observe(getViewLifecycleOwner(), new Observer<List<Parameters>>(){
             @Override
             public void onChanged(List<Parameters> parameters) {
                 TerminalFragment.this.parameters.clear();
