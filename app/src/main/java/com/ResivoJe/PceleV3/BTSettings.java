@@ -12,6 +12,9 @@ import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -43,6 +46,24 @@ public class BTSettings extends AppCompatActivity implements AdapterView.OnItemC
 
     boolean isValid(CharSequence s) {
         return sPattern.matcher(s).matches();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        switch (id) {
+            case R.id.vrati_se:
+                finish();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_blutut, menu);
+        return true;
     }
 
     // Create a BroadcastReceiver for ACTION_FOUND

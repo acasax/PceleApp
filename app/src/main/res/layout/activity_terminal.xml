@@ -120,15 +120,14 @@
                     android:src="@android:drawable/ic_input_add" />
 
             </LinearLayout>
-
             <TextView
-                android:id="@+id/impulsTitleTxt"
+                android:id="@+id/volatageTitleTxt"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:layout_marginBottom="10dp"
                 android:gravity="center_horizontal"
-                android:text="@string/impuls"
+                android:text="@string/napon"
                 android:textAlignment="center"
                 android:textSize="20dp" />
 
@@ -139,14 +138,14 @@
                 android:orientation="horizontal">
 
                 <ImageButton
-                    android:id="@+id/minusImpulsBtn"
+                    android:id="@+id/minusVoltageBtn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:src="@drawable/minus" />
 
                 <TextView
-                    android:id="@+id/impulsTxt"
+                    android:id="@+id/voltageTxt"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="15dp"
@@ -154,12 +153,12 @@
                     android:layout_weight="2"
                     android:gravity="center_horizontal"
                     android:minWidth="100dp"
-                    android:text="@string/_1"
+                    android:text="@string/_10"
                     android:textAlignment="center"
                     android:textSize="32sp" />
 
                 <ImageButton
-                    android:id="@+id/plusImpulsBtn"
+                    android:id="@+id/plusVoltageBtn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -213,15 +212,14 @@
                     android:src="@android:drawable/ic_input_add" />
 
             </LinearLayout>
-
             <TextView
-                android:id="@+id/volatageTitleTxt"
+                android:id="@+id/impulsTitleTxt"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:layout_marginBottom="10dp"
                 android:gravity="center_horizontal"
-                android:text="@string/napon"
+                android:text="@string/impuls"
                 android:textAlignment="center"
                 android:textSize="20dp" />
 
@@ -232,14 +230,14 @@
                 android:orientation="horizontal">
 
                 <ImageButton
-                    android:id="@+id/minusVoltageBtn"
+                    android:id="@+id/minusImpulsBtn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:src="@drawable/minus" />
 
                 <TextView
-                    android:id="@+id/voltageTxt"
+                    android:id="@+id/impulsTxt"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="15dp"
@@ -247,18 +245,20 @@
                     android:layout_weight="2"
                     android:gravity="center_horizontal"
                     android:minWidth="100dp"
-                    android:text="@string/_10"
+                    android:text="@string/_1"
                     android:textAlignment="center"
                     android:textSize="32sp" />
 
                 <ImageButton
-                    android:id="@+id/plusVoltageBtn"
+                    android:id="@+id/plusImpulsBtn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:src="@android:drawable/ic_input_add" />
 
             </LinearLayout>
+
+
 
         </LinearLayout>
     </ScrollView>

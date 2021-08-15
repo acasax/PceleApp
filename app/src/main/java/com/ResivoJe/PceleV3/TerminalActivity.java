@@ -70,11 +70,11 @@ public class TerminalActivity extends AppCompatActivity {
 
         //Pauza
         binding.plusPauseBtn.setOnTouchListener((v, event) -> {
-            return handleEvent(event, value -> deviceParams.setPause(value), deviceParams.getPause(), 1, 1, 10);
+            return handleEvent(event, value -> deviceParams.setPause(value), deviceParams.getPause(), 1, 0, 10);
         });
 
         binding.minusPauseBtn.setOnTouchListener((v, event) -> {
-            return handleEvent(event, value -> deviceParams.setPause(value), deviceParams.getPause(), -1, 1, 10);
+            return handleEvent(event, value -> deviceParams.setPause(value), deviceParams.getPause(), -1, 0, 10);
         });
 
         //Impuls
@@ -190,6 +190,16 @@ public class TerminalActivity extends AppCompatActivity {
         binding.frekTxt.setText(String.valueOf(deviceParams.getFrequency()));
         binding.impulsTxt.setText(String.valueOf(deviceParams.getImpuls()));
         binding.pauseTxt.setText(String.valueOf(deviceParams.getPause()));
+        if (deviceParams.getPause() == 0){
+            binding.minusImpulsBtn.setEnabled(false);
+            binding.plusImpulsBtn.setEnabled(false);
+            binding.impulsTitleTxt.setTextColor(Color.RED);
+        }
+        else {
+            binding.impulsTitleTxt.setTextColor(Color.WHITE);
+            binding.minusImpulsBtn.setEnabled(true);
+            binding.plusImpulsBtn.setEnabled(true);
+        }
         binding.voltageTxt.setText(String.valueOf(deviceParams.getVoltage()));
     }
 
