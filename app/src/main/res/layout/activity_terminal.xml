@@ -1,20 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    >
+    android:orientation="vertical">
 
     <ScrollView
         android:id="@+id/scrollView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:isScrollContainer="true"
         android:layout_weight="3"
-        >
-
+        android:isScrollContainer="true">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -51,31 +47,31 @@
                 android:orientation="horizontal">
 
                 <ImageButton
-                    android:layout_weight="1"
                     android:id="@+id/minusTimeBtn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:srcCompat="@drawable/minus" />
+                    android:layout_weight="1"
+                    android:src="@drawable/minus"/>
 
                 <TextView
-                    android:layout_weight="2"
-                    android:minWidth="100dp"
                     android:id="@+id/timeTxt"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="15dp"
                     android:layout_marginRight="15dp"
+                    android:layout_weight="2"
                     android:gravity="center_horizontal"
+                    android:minWidth="100dp"
                     android:text="@string/_1"
                     android:textAlignment="center"
                     android:textSize="32sp" />
 
                 <ImageButton
-                    android:layout_weight="1"
                     android:id="@+id/plusTimeBtn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:srcCompat="@android:drawable/ic_input_add" />
+                    android:layout_weight="1"
+                    android:src="@android:drawable/ic_input_add" />
 
             </LinearLayout>
 
@@ -97,42 +93,42 @@
                 android:orientation="horizontal">
 
                 <ImageButton
-                    android:layout_weight="1"
                     android:id="@+id/minusFrekBtn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:srcCompat="@drawable/minus" />
+                    android:layout_weight="1"
+                    android:src="@drawable/minus" />
 
                 <TextView
-                    android:layout_weight="2"
-                    android:minWidth="100dp"
                     android:id="@+id/frekTxt"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="15dp"
                     android:layout_marginRight="15dp"
+                    android:layout_weight="2"
                     android:gravity="center_horizontal"
+                    android:minWidth="100dp"
                     android:text="@string/_100"
                     android:textAlignment="center"
                     android:textSize="32sp" />
 
                 <ImageButton
-                    android:layout_weight="1"
                     android:id="@+id/plusFrekBtn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:srcCompat="@android:drawable/ic_input_add" />
+                    android:layout_weight="1"
+                    android:src="@android:drawable/ic_input_add" />
 
             </LinearLayout>
 
             <TextView
-                android:id="@+id/volatageTitleTxt"
+                android:id="@+id/impulsTitleTxt"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:layout_marginBottom="10dp"
                 android:gravity="center_horizontal"
-                android:text="@string/napon"
+                android:text="@string/impuls"
                 android:textAlignment="center"
                 android:textSize="20dp" />
 
@@ -143,31 +139,31 @@
                 android:orientation="horizontal">
 
                 <ImageButton
-                    android:layout_weight="1"
-                    android:id="@+id/minusVoltageBtn"
+                    android:id="@+id/minusImpulsBtn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:srcCompat="@drawable/minus" />
+                    android:layout_weight="1"
+                    android:src="@drawable/minus" />
 
                 <TextView
-                    android:layout_weight="2"
-                    android:minWidth="100dp"
-                    android:id="@+id/voltageTxt"
+                    android:id="@+id/impulsTxt"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="15dp"
                     android:layout_marginRight="15dp"
+                    android:layout_weight="2"
                     android:gravity="center_horizontal"
-                    android:text="@string/_10"
+                    android:minWidth="100dp"
+                    android:text="@string/_1"
                     android:textAlignment="center"
                     android:textSize="32sp" />
 
                 <ImageButton
-                    android:layout_weight="1"
-                    android:id="@+id/plusVoltageBtn"
+                    android:id="@+id/plusImpulsBtn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:srcCompat="@android:drawable/ic_input_add" />
+                    android:layout_weight="1"
+                    android:src="@android:drawable/ic_input_add" />
 
             </LinearLayout>
 
@@ -190,44 +186,42 @@
 
 
                 <ImageButton
-                    android:layout_weight="1"
                     android:id="@+id/minusPauseBtn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:srcCompat="@drawable/minus" />
+                    android:layout_weight="1"
+                    android:src="@drawable/minus" />
 
                 <TextView
-                    android:layout_weight="2"
-                    android:minWidth="100dp"
                     android:id="@+id/pauseTxt"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="15dp"
                     android:layout_marginRight="15dp"
+                    android:layout_weight="2"
                     android:gravity="center_horizontal"
+                    android:minWidth="100dp"
                     android:text="@string/_1"
                     android:textAlignment="center"
                     android:textSize="32sp" />
 
                 <ImageButton
-                    android:layout_weight="1"
                     android:id="@+id/plusPauseBtn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:srcCompat="@android:drawable/ic_input_add" />
+                    android:layout_weight="1"
+                    android:src="@android:drawable/ic_input_add" />
 
             </LinearLayout>
 
-
-
             <TextView
-                android:id="@+id/impulsTitleTxt"
+                android:id="@+id/volatageTitleTxt"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:layout_marginBottom="10dp"
                 android:gravity="center_horizontal"
-                android:text="@string/impuls"
+                android:text="@string/napon"
                 android:textAlignment="center"
                 android:textSize="20dp" />
 
@@ -238,31 +232,31 @@
                 android:orientation="horizontal">
 
                 <ImageButton
-                    android:layout_weight="1"
-                    android:id="@+id/minusImpulsBtn"
+                    android:id="@+id/minusVoltageBtn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:srcCompat="@drawable/minus" />
+                    android:layout_weight="1"
+                    android:src="@drawable/minus" />
 
                 <TextView
-                    android:layout_weight="2"
-                    android:minWidth="100dp"
-                    android:id="@+id/impulsTxt"
+                    android:id="@+id/voltageTxt"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="15dp"
                     android:layout_marginRight="15dp"
+                    android:layout_weight="2"
                     android:gravity="center_horizontal"
-                    android:text="@string/_1"
+                    android:minWidth="100dp"
+                    android:text="@string/_10"
                     android:textAlignment="center"
                     android:textSize="32sp" />
 
                 <ImageButton
-                    android:layout_weight="1"
-                    android:id="@+id/plusImpulsBtn"
+                    android:id="@+id/plusVoltageBtn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:srcCompat="@android:drawable/ic_input_add" />
+                    android:layout_weight="1"
+                    android:src="@android:drawable/ic_input_add" />
 
             </LinearLayout>
 
@@ -279,83 +273,84 @@
         android:orientation="vertical">
 
         <LinearLayout
-            android:layout_weight="1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:orientation="horizontal">
 
             <Button
-                android:layout_margin="10dp"
-                android:textSize="20dp"
-                android:minHeight="80dp"
                 android:id="@+id/sendAll_btn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_margin="10dp"
                 android:layout_marginTop="30px"
-                android:background="@color/colorPrimary"
-                android:text="@string/start_all"
                 android:layout_weight="1"
-                android:textColor="@color/black" />
+                android:background="@color/colorPrimary"
+                android:minHeight="80dp"
+                android:text="@string/start_all"
+                android:textColor="@color/black"
+                android:textSize="20dp" />
 
             <Button
-                android:layout_margin="10dp"
-                android:textSize="20dp"
-                android:minHeight="80dp"
                 android:id="@+id/send_btn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_margin="10dp"
                 android:layout_marginTop="30px"
                 android:layout_weight="1"
                 android:background="@color/colorPrimary"
+                android:minHeight="80dp"
                 android:text="@string/po_ni"
-                android:textColor="@color/black" />
+                android:textColor="@color/black"
+                android:textSize="20dp" />
 
         </LinearLayout>
 
         <LinearLayout
-            android:layout_weight="1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:orientation="horizontal">
 
-        <Button
-            android:layout_margin="10dp"
-            android:textSize="20dp"
-            android:minHeight="80dp"
-            android:id="@+id/get_btn"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="30px"
-            android:background="@color/colorPrimary"
-            android:text="@string/get"
-            android:layout_weight="1"
-            android:textColor="@color/black" />
+            <Button
+                android:id="@+id/get_btn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:layout_marginTop="30px"
+                android:layout_weight="1"
+                android:background="@color/colorPrimary"
+                android:minHeight="80dp"
+                android:text="@string/get"
+                android:textColor="@color/black"
+                android:textSize="20dp" />
+
+            <Button
+                android:id="@+id/stop_btn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:layout_marginTop="30px"
+                android:layout_weight="1"
+                android:background="@color/colorPrimary"
+                android:minHeight="80dp"
+                android:text="@string/prekini"
+                android:textColor="@color/black"
+                android:textSize="20dp" />
+        </LinearLayout>
 
         <Button
-            android:layout_margin="10dp"
-            android:textSize="20dp"
-            android:minHeight="80dp"
-            android:id="@+id/stop_btn"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="30px"
-            android:background="@color/colorPrimary"
-            android:text="@string/prekini"
-            android:layout_weight="1"
-            android:textColor="@color/black" />
-        </LinearLayout>
-        <Button
-            android:layout_margin="10dp"
-            android:textSize="20dp"
-            android:minHeight="80dp"
             android:id="@+id/save_parameters"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_margin="10dp"
             android:layout_marginTop="30px"
-            android:background="@color/colorPrimary"
-            android:text="@string/sacuvaj"
             android:layout_weight="1"
-            android:textColor="@color/black" />
+            android:background="@color/colorPrimary"
+            android:minHeight="80dp"
+            android:text="@string/sacuvaj"
+            android:textColor="@color/black"
+            android:textSize="20dp" />
 
 
     </LinearLayout>
