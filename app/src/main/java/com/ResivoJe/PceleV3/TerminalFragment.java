@@ -52,6 +52,7 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
     private final static String BEGIN = "<";
     private final static String END = ">";
     private FragmentTerminalBinding binding;
+    private Menu menu;
 
     private enum Connected {False, Pending, True}
 
@@ -90,6 +91,14 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
         deviceAddress = getArguments().getString("device");
         devicesAddresses = getArguments().getStringArray("devices");
         sendAllBoolean = getArguments().getBoolean("sendAll");
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_terminal, menu);
+        this.menu = menu;
+//        this.i0 = menu.getItem(2);
+//        this.i1 = menu.getItem(3);
     }
 
     @Override
@@ -354,7 +363,7 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
         //
         MyRoomDatabase myRoomDatabase = MyRoomDatabase.getDatabase(getContext());
         final LiveData<List<Parameters>> listLiveData = myRoomDatabase.parametersDAO().getAll();
-        listLiveData.observe(TerminalFragment.this, parameters -> {
+        listLiveData.observe(getViewLifecycleOwner(), parameters -> {
             TerminalFragment.this.parameters.clear();
             for (Parameters p : parameters) {
                 TerminalFragment.this.parameters.add(p);
@@ -391,11 +400,6 @@ public class TerminalFragment extends Fragment implements ServiceConnection, Ser
         impuls.setText(String.valueOf(parameters.get(i).getImpuls()));
         pause.setText(String.valueOf(parameters.get(i).getPause()));
         voltage.setText(String.valueOf(parameters.get(i).getVoltage()));
-    }
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.menu_terminal, menu);
     }
 
     @Override

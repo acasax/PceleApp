@@ -8,17 +8,23 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.lifecycle.LiveData;
 
 import com.ResivoJe.PceleV3.database.MyRoomDatabase;
 import com.ResivoJe.PceleV3.database.Parameters;
 import com.ResivoJe.PceleV3.databinding.ActivityTerminalBinding;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class TerminalActivity extends AppCompatActivity {
 
@@ -40,10 +46,69 @@ public class TerminalActivity extends AppCompatActivity {
     private boolean isGet = false;
 
     @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        switch (id) {
+            case R.id.default_state:
+                chosenState = 1;
+                loadState();
+                return true;
+            case R.id.state_1:
+                chosenState = 2;
+                loadState();
+                return true;
+            case R.id.state_2:
+                chosenState = 3;
+                loadState();
+                return true;
+            case R.id.state_3:
+                chosenState = 4;
+                loadState();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    private void loadState() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                LiveData<List<Parameters>> parametersObserver = MyRoomDatabase.getDatabase(TerminalActivity.this).parametersDAO().getAll();
+                parametersObserver.observe(TerminalActivity.this, parameters -> {
+                    for (Parameters param : parameters)
+                    {
+                        if (param.getID() == chosenState)
+                        {
+                            deviceParams.setVoltage(param.getVoltage());
+                            deviceParams.setFrequency(param.getFrequency());
+                            deviceParams.setImpuls(param.getImpuls());
+                            deviceParams.setPause(param.getPause());
+                            deviceParams.setTime(param.getTime());
+                            displayParams();
+                        }
+                    }
+                });
+            }
+        });
+    }
+
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_terminal, menu);
+        return true;
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         binding = ActivityTerminalBinding.inflate(this.getLayoutInflater());
         setContentView(binding.getRoot());
         super.onCreate(savedInstanceState);
+
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        toolbar.setTitleTextColor(Color.BLACK);
+
         handler = new Handler();
 
         Intent intent = getIntent();
@@ -88,11 +153,11 @@ public class TerminalActivity extends AppCompatActivity {
 
         //Frekvencija
         binding.plusFrekBtn.setOnTouchListener((v, event) -> {
-            return handleEvent(event, value -> deviceParams.setFrequency(value), deviceParams.getFrequency(), 1, 100, 1200);
+            return handleEvent(event, value -> deviceParams.setFrequency(value), deviceParams.getFrequency(), 10, 100, 1200);
         });
 
         binding.minusFrekBtn.setOnTouchListener((v, event) -> {
-            return handleEvent(event, value -> deviceParams.setFrequency(value), deviceParams.getFrequency(), -1, 100, 1200);
+            return handleEvent(event, value -> deviceParams.setFrequency(value), deviceParams.getFrequency(), -10, 100, 1200);
         });
 
         //Vreme
@@ -117,7 +182,7 @@ public class TerminalActivity extends AppCompatActivity {
             builder1.setSingleChoiceItems(adapter, 0, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    chosenState = which;
+                    chosenState = which+2;
                 }
             });
 
@@ -190,6 +255,7 @@ public class TerminalActivity extends AppCompatActivity {
         binding.frekTxt.setText(String.valueOf(deviceParams.getFrequency()));
         binding.impulsTxt.setText(String.valueOf(deviceParams.getImpuls()));
         binding.pauseTxt.setText(String.valueOf(deviceParams.getPause()));
+        binding.voltageTxt.setText(String.valueOf(deviceParams.getVoltage()));
         if (deviceParams.getPause() == 0){
             binding.minusImpulsBtn.setEnabled(false);
             binding.plusImpulsBtn.setEnabled(false);
@@ -200,11 +266,9 @@ public class TerminalActivity extends AppCompatActivity {
             binding.minusImpulsBtn.setEnabled(true);
             binding.plusImpulsBtn.setEnabled(true);
         }
-        binding.voltageTxt.setText(String.valueOf(deviceParams.getVoltage()));
     }
 
     private void saveState() {
-        chosenState += 2;
         new Thread(() -> MyRoomDatabase.getDatabase(TerminalActivity.this).parametersDAO().updateState(
                 chosenState, deviceParams.getTime(), deviceParams.getFrequency(), deviceParams.getImpuls(), deviceParams.getPause(), deviceParams.getVoltage())).start();
     }

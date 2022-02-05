@@ -12,7 +12,7 @@ import androidx.sqlite.db.SupportSQLiteDatabase;
 import java.util.Date;
 import java.util.concurrent.Executors;
 
-@Database(version = 1,
+@Database(version = 2,
         entities = {
                 Parameters.class
         },
