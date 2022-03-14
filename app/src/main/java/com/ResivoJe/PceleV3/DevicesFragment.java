@@ -41,7 +41,7 @@ public class DevicesFragment extends ListFragment {
     Pattern sPattern = Pattern.compile("^BS(RAM|ram)((([A-Z])|([a-z])|([0-9])){0,18})$");
     private static final String TAG = "DEVICES";
     private Menu menu;
-    private MenuItem i0, i1;
+    private MenuItem i0, i1, i2;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -122,6 +122,7 @@ public class DevicesFragment extends ListFragment {
         this.menu = menu;
         this.i0 = menu.getItem(2);
         this.i1 = menu.getItem(3);
+        this.i2 = menu.getItem(4);
     }
 
     @Override
@@ -165,6 +166,10 @@ public class DevicesFragment extends ListFragment {
                 i0.setTitle(R.string.engelski);
                 i1.setTitle(R.string.srpski);
                 return true;
+            case R.id.gr_lang:
+                setAppLocale("gr");
+                i0.setTitle(R.string.engelski);
+                i1.setTitle(R.string.srpski);
             default:
                 return super.onOptionsItemSelected(item);
         }

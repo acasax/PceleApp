@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">BS Giftsammler</string>
+    <string name="devices">Verfügbare Geräte</string>
+    <string name="po_ni">Start</string>
+    <string name="prekini">Stoppen</string>
+    <string name="sacuvaj">Parameter speichern</string>
+    <string name="_1">1</string>
+    <string name="vreme">ZEIT (min)</string>
+    <string name="frekvencija">FREQUENZ (Hz)</string>
+    <string name="impuls">IMPULS (s)</string>
+    <string name="napon">STROMSPANNUNG (V)</string>
+    <string name="pauza">PAUSE (s)</string>
+    <string name="_100">100</string>
+    <string name="_10">10</string>
+    <string name="_0">0</string>
+    <string name="start_all">ALLES STARTEN</string>
+    <string name="get">Zustand lesen</string>
+    <string name="upali_blutut">Schalten Sie Bluetooth ein</string>
+    <string name="izaberi_sve">ALLES AUSWÄHLEN</string>
+    <string name="pode_avanja_blututa">Bluetooth-Einstellungen</string>
+    <string name="engelski">englisch</string>
+    <string name="srpski">serbisch</string>
+    <string name="nemacki">deutsch</string>
+    <string name="osvezi">Aktualisierung</string>
+    <string name="blutut_podesavanja">Bluetooth-Einstellungen</string>
+    <string name="predefinisano_stanje">Initialisierungszustand</string>
+    <string name="stanje_1">Bundesland 1</string>
+    <string name="stanje_2">Bundesland 2</string>
+    <string name="stanje_3">Bundesland 3</string>
+    <string name="on_off">ON/OFF</string>
+    <string name="discover">Entdecken</string>
+    <string name="pair_all">Alle koppeln</string>
+    <string name="loading">Laden, bitte warten....</string>
+    <string name="initializing">initialisieren...</string>
+    <string name="Blutut">Bluetooth ist auf diesem Gerät nicht verfügbar.</string>
+    <string name="Blutut1">Das Bluetooth ist aus</string>
+    <string name="Blutut2">Keine Geräte gefunden</string>
+    <string name="BlututS">Hintergrunddienst</string>
+    <string name="BlututD">Hintergrund trennen</string>
+    <string name="saveState">Wählen Sie aus, wo Sie die Parameter speichern möchten:</string>
+    <string name="save">Speichern</string>
+    <string name="Odustani">Abbrechen</string>
+    <string name="Povezivanj">Verbinden...</string>
+    <string name="Povezano">Verbunden </string>
+    <string name="Povezano1">In Verbindung gebracht</string>
+    <string name="poslata">Nachricht gesendet </string>
+    <string name="poslataN">Nachricht nicht gesendet  </string>
+    <string name="NijePovezano">nicht verbunden</string>
+    <string name="PokusajPonovo">Versuchen Sie es nochmal</string>
+    <string name="UredjajiN">Geräte, die den Befehl nicht erfolgreich empfangen haben, sind: \n</string>
+    <string name="Uredjaji">Die Geräte, die den Befehl erfolgreich empfangen haben, sind: \n</string>
+    <string name="URedu">OK</string>
+
+    <string name="NepoznataGreska">Unbekannter Fehler.</string>
+    <string name="Greska">Error</string>
+
+    <string name="E0">Sie haben den Befehl erfolgreich gesendet. \n</string>
+    <string name="E1">Die Nachricht hat kein gutes Format. \n</string>
+    <string name="E2">Fehler in eingestellten Parametern. \n</string>
+    <string name="E3">Der Befehl kann nicht ausgeführt werden. \n</string>
+
+    <string name="R0">Das Gerät funktioniert nicht. \n</string>
+
+    <string name="Preostalo">Das Senden</string>
+    <string name="MinRada"> min Gerätebetrieb. \n</string>
+
+    <string name="KomandaDoKraja">Das Gerät hat den Befehl bis zum Ende ausgeführt.\n</string>
+    <string name="KonekcijaPrekinuda">Verbindung abgebrochen: </string>
+
+</resources>

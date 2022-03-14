@@ -24,5 +24,10 @@
         android:title="@string/srpski"
         app:iconTint="@color/black"/>
 
+    <item
+        android:id="@+id/gr_lang"
+        android:title="@string/nemacki"
+        app:iconTint="@color/black"/>
+
 </menu>
 
